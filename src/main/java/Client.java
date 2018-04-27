@@ -8,18 +8,30 @@ import static java.lang.System.*;
 
 public class Client {
     private int serverPort;
-    private String ipAddress;
+    private String ipAddressServer;
+
+    private Socket socket;
 
     public Client(int serverPort) {
         this.serverPort = serverPort;
     }
 
+    private void getIpAdressServer(boolean local) throws  UnknownHostException{
+        ipAddressServer = local
+                ? Inet4Address.getLocalHost().getHostAddress()
+                : "0";
+    }
+
+    private void creteSocket() throws IOException {
+        socket = new Socket(ipAddressServer, serverPort);
+    }
+
     public void run() {
         try {
-            ipAddress = Inet4Address.getLocalHost().getHostAddress();
-            out.println("IP адрес клиента: " + ipAddress);
+            getIpAdressServer(true);
+            out.println("IP адрес server: " + ipAddressServer);
 
-            Socket socket = new Socket(ipAddress, serverPort);
+            socket = new Socket(ipAddressServer, serverPort);
             out.println("Подключился к серверу");
 
             InputStream sIn = socket.getInputStream();
@@ -58,7 +70,11 @@ public class Client {
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
     }
-    public static void main(String[] args) {
 
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    public static void main(String[] args) {
+        Client client = new Client(7777);
+        client.run();
     }
 }
