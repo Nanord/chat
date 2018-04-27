@@ -1,6 +1,8 @@
 import java.io.*;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Server extends Thread{
     private int port = 7777;
@@ -49,6 +51,7 @@ public class Server extends Thread{
 
     public static void main(String[] args) {
         try {
+            System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
             int count = 0; //счетчиек клиентов
 
             ServerSocket serverSocket = new ServerSocket(7777);
@@ -58,6 +61,8 @@ public class Server extends Thread{
                 new Server(count, serverSocket.accept());
                 count++;
             }
+        } catch (UnknownHostException ex) {
+            System.out.println("Неудалось узнать IP сервера");
         } catch (IOException ex) {
             System.out.println("IOExeprion on Server");
         }
