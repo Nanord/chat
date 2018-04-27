@@ -34,7 +34,7 @@ public class Server extends Thread{
                 out.flush();
             }
         } catch (IOException ex) {
-          System.out.println("IOExeption с получением или отправлением сообщения");
+            System.out.println("Кливент " + count + " отключился");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
