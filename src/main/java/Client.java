@@ -16,10 +16,10 @@ public class Client {
         this.serverPort = serverPort;
     }
 
-    private void getIpAdressServer(boolean local) throws  UnknownHostException{
-        ipAddressServer = local
+    private void getIpAdressServer(boolean status) throws  UnknownHostException{
+        ipAddressServer = status
                 ? Inet4Address.getLocalHost().getHostAddress()
-                : "0";
+                : "10.182.1.123";
     }
 
     private void creteSocket() throws IOException {
@@ -28,7 +28,7 @@ public class Client {
 
     public void run() {
         try {
-            getIpAdressServer(true);
+            getIpAdressServer(false);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);

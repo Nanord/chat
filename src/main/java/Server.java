@@ -48,7 +48,8 @@ public class Server extends Thread{
         this.port = port;
     }
 
-
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
