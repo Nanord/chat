@@ -5,71 +5,50 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Server implements Runnable{
-    private int count;
-    private Socket socket;
+public class Server {
+    //static ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private ServerSocket serverSocket;
+    private int port;
 
-    public Server(int count, Socket socket) {
-        this.socket = socket;
-        this.count = count;
-        final Thread serverThread = new Thread(this, "server.Server");
-        serverThread.start();
+    public Server(int port) {
+        this.port = port;
     }
 
-    @Override
-    public void run() {
-        try {
-            System.out.println("Подключился клиент " + count + ":"  + socket.getInetAddress().getHostAddress());
+    public void start() throws IOException {
+        serverSocket = new ServerSocket(port);
+        System.out.println("Ждем клиентов");
 
-            InputStream sIn = socket.getInputStream();
-            OutputStream sOut = socket.getOutputStream();
+        int count = 1; //счетчиек клиентов
+        while ( !serverSocket.isClosed() ) {
 
-            DataInputStream in = new DataInputStream(sIn);
-            DataOutputStream out = new DataOutputStream(sOut);
+            Socket socket = serverSocket.accept();
+            ClientHandler clientHandler = new ClientHandler(count, socket);
+            clientHandler.start();
 
-            String message = null;
-            while (!socket.isClosed()) {
-                message = in.readUTF();
-                System.out.println("Клиент " + count + " пишет : " + message);
-
-                if(message.equalsIgnoreCase("-q")) {
-                    System.out.println("Клиент " + count + " отключился");
-                    socket.close();
-                } else {
-                    out.writeUTF(message);
-                    out.flush();
-                }
-            }
-
-            in.close();
-            out.close();
-            socket.close();
-
-        } catch (IOException ex) {
-            System.err.println("Кливент " + count + "  неожиданно отключился");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            count++;
         }
+
     }
+
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            int count = 0; //счетчиек клиентов
+            short port = 7777;
+            Server server = new Server(port);
+            server.start();
 
-            ServerSocket serverSocket = new ServerSocket(7777);
-            System.out.println("Ждем клиентов");
-
-            while (true) {
-                new Server(count, serverSocket.accept());
-                count++;
-            }
         } catch (UnknownHostException ex) {
             System.err.println("Неудалось узнать IP сервера");
         } catch (IOException ex) {
             System.err.println("IOExeprion on server.Server");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

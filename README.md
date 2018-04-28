@@ -1,4 +1,4 @@
-Client-Server chat on java
+client.Client-server.Server chat on java
 
 чат клиент-серверный
 
