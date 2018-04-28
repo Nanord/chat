@@ -1,11 +1,19 @@
 package server;
 
+import data.Group;
+import data.Message;
+import data.Client;
+
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.List;
 
 public class ClientHandler extends Thread{
     private Socket socket;
     private int count;
+    private Client client;
+    private Message message;
 
     public ClientHandler(int count, Socket socket) {
         this.socket = socket;
@@ -15,34 +23,56 @@ public class ClientHandler extends Thread{
     @Override
     public void run() {
         try {
-            System.out.println("Подключился клиент " + count + ":"  + socket.getInetAddress().getHostAddress());
+            final ObjectInputStream inputStream = new ObjectInputStream(this.socket.getInputStream());
+            final ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
 
-            InputStream sIn = socket.getInputStream();
-            OutputStream sOut = socket.getOutputStream();
+            this.message = (Message) inputStream.readObject();
+            this.client = message.getClient();
 
-            DataInputStream in = new DataInputStream(sIn);
-            DataOutputStream out = new DataOutputStream(sOut);
-
-            String message = null;
             while (!socket.isClosed()) {
-                message = in.readUTF();
-                System.out.println("Клиент " + count + " пишет : " + message);
+                this.message = (Message) inputStream.readObject();
+                System.out.println("Клиент " + client.getId() + " пишет : " + message.getData());
 
-                if(message.equalsIgnoreCase("-q")) {
-                    System.out.println("Клиент " + count + " отключился");
-                    socket.close();
-                } else {
-                    out.writeUTF(message);
-                    out.flush();
+                if(message.getData().substring(0,1).equalsIgnoreCase("-")) {
+                    String[] comm_text = message.getData().split(" ");
+                    String comm = comm_text[0];
+                    String text = comm_text[1];
+                    if (comm.equalsIgnoreCase("-q")) {
+                        System.out.println("Клиент " + count + " отключился");
+                        socket.close();
+                    } else if (comm.equalsIgnoreCase("-join")){
+                        Group group = getGroup(text);
+                        group.addUser(client);
+                        group.sendMssage(new Message(null, "Вошел в группу: " + client.getId()));
+                    } else {
+
+                    }
                 }
+
             }
 
-            in.close();
-            out.close();
+            inputStream.close();
+            outputStream.close();
             socket.close();
 
+        } catch (SocketException ex) {
+            System.out.println(client.getId() + "Вышел");
         } catch (IOException ex) {
             System.err.println("Кливент " + count + "  неожиданно отключился");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Присланный объект не соответствует протоколу");
+            ex.printStackTrace();
         }
     }
+
+    public synchronized static Group getGroup(String name) {
+        for (Group group:
+                Server.getGroupList()) {
+            if(group.getNameGroup().equalsIgnoreCase(name)) {
+                return group;
+            }
+        }
+        return null;
+    }
+
 }

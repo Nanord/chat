@@ -5,6 +5,7 @@ import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+
 import static java.lang.System.*;
 
 public class Client {
@@ -17,10 +18,10 @@ public class Client {
         this.serverPort = serverPort;
     }
 
-    private void getIpAdressServer(boolean status) throws  UnknownHostException{
+    private void getIpAddressServer(boolean status) throws  UnknownHostException{
         ipAddressServer = status
                 ? Inet4Address.getLocalHost().getHostAddress()
-                : "10.182.1.123";
+                : System.getProperty("ipServer");
     }
 
     private void creteSocket() throws IOException {
@@ -29,7 +30,7 @@ public class Client {
 
     public void run() {
         try {
-            getIpAdressServer(true);
+            getIpAddressServer(false);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);
@@ -75,7 +76,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
-        Client client = new Client(7777);
+        Client client = new Client(Integer.parseInt(System.getProperty("port")));
         client.run();
     }
 }
