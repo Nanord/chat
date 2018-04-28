@@ -1,4 +1,5 @@
-import javax.imageio.IIOException;
+package client;
+
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.Socket;
@@ -28,7 +29,7 @@ public class Client {
 
     public void run() {
         try {
-            getIpAdressServer(false);
+            getIpAdressServer(true);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);
@@ -55,9 +56,9 @@ public class Client {
             }
 
         } catch (UnknownHostException ex) {
-            out.println("Неудалось узнать адресс ");
+            err.println("Неудалось узнать адресс ");
         } catch (IOException e) {
-            out.println("IOExeption on Clint");
+            err.println("IOExeption on Clint");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

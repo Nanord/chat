@@ -1,20 +1,23 @@
+package server;
+
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Server extends Thread{
-    private int port = 7777;
+public class Server implements Runnable{
     private int count;
     private Socket socket;
 
     public Server(int count, Socket socket) {
         this.socket = socket;
         this.count = count;
-        start();
+        final Thread serverThread = new Thread(this, "server.Server");
+        serverThread.start();
     }
 
+    @Override
     public void run() {
         try {
             System.out.println("Подключился клиент " + count + ":"  + socket.getInetAddress().getHostAddress());
@@ -25,29 +28,30 @@ public class Server extends Thread{
             DataInputStream in = new DataInputStream(sIn);
             DataOutputStream out = new DataOutputStream(sOut);
 
-            String line = null;
-            while (true) {
-                line = in.readUTF();
-                System.out.println("Клиент " + count + " пишет : " + line);
+            String message = null;
+            while (!socket.isClosed()) {
+                message = in.readUTF();
+                System.out.println("Клиент " + count + " пишет : " + message);
 
-                out.writeUTF(line);
-                out.flush();
+                if(message.equalsIgnoreCase("-q")) {
+                    System.out.println("Клиент " + count + " отключился");
+                    socket.close();
+                } else {
+                    out.writeUTF(message);
+                    out.flush();
+                }
             }
+
+            in.close();
+            out.close();
+            socket.close();
+
         } catch (IOException ex) {
-            System.out.println("Кливент " + count + " отключился");
+            System.err.println("Кливент " + count + "  неожиданно отключился");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
@@ -63,9 +67,9 @@ public class Server extends Thread{
                 count++;
             }
         } catch (UnknownHostException ex) {
-            System.out.println("Неудалось узнать IP сервера");
+            System.err.println("Неудалось узнать IP сервера");
         } catch (IOException ex) {
-            System.out.println("IOExeprion on Server");
+            System.err.println("IOExeprion on server.Server");
         }
     }
 }
