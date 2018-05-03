@@ -2,16 +2,17 @@ package data;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 
-public class Client {
+public class User  {
     private String id;
 
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
-    public Client(Socket socket, ObjectOutputStream os, ObjectInputStream is) {
+    public User(Socket socket, ObjectOutputStream os, ObjectInputStream is) {
         this.socket = socket;
         outputStream = os;
         inputStream = is;

@@ -1,24 +1,23 @@
 package data;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 public class Group {
     private List<Message> messageList;
     private String nameGroup;
-    private List<Client> clientList;
+    private List<User> userList;
 
-    public Group(List<Client> clientList, String nameGroup) {
-        this.clientList = clientList;
+    public Group(List<User> userList, String nameGroup) {
+        this.userList = userList;
         this.nameGroup = nameGroup;
     }
 
 
     public void sendMssage(Message message) throws IOException {
-        for(Client client :
-                clientList) {
-            client.getOutputStream().writeObject(message);
+        for(User user :
+                userList) {
+            user.getOutputStream().writeObject(message);
         }
     }
 
@@ -26,12 +25,12 @@ public class Group {
         messageList.add(message);
     }
 
-    public void addUser(Client client) {
-        clientList.add(client);
+    public void addUser(User user) {
+        userList.add(user);
     }
 
-    public List<Client> getClientList() {
-        return clientList;
+    public List<User> getUserList() {
+        return userList;
     }
 
     public List<Message> getMessageList() {

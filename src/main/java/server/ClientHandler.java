@@ -2,17 +2,16 @@ package server;
 
 import data.Group;
 import data.Message;
-import data.Client;
+import data.User;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.List;
 
 public class ClientHandler extends Thread{
     private Socket socket;
     private int count;
-    private Client client;
+    private User user;
     private Message message;
 
     public ClientHandler(int count, Socket socket) {
@@ -27,14 +26,14 @@ public class ClientHandler extends Thread{
             final ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
 
             this.message = (Message) inputStream.readObject();
-            this.client = message.getClient();
+            this.user = message.getUser();
 
             while (!socket.isClosed()) {
                 this.message = (Message) inputStream.readObject();
-                System.out.println("Клиент " + client.getId() + " пишет : " + message.getData());
+                System.out.println("Клиент " + user.getId() + " пишет : " + message.getData());
 
                 if(message.getData().substring(0,1).equalsIgnoreCase("-")) {
-                    String[] comm_text = message.getData().split(" ");
+                        String[] comm_text = message.getData().split(" ");
                     String comm = comm_text[0];
                     String text = comm_text[1];
                     if (comm.equalsIgnoreCase("-q")) {
@@ -42,11 +41,14 @@ public class ClientHandler extends Thread{
                         socket.close();
                     } else if (comm.equalsIgnoreCase("-join")){
                         Group group = getGroup(text);
-                        group.addUser(client);
-                        group.sendMssage(new Message(null, "Вошел в группу: " + client.getId()));
+                        group.addUser(user);
+                        group.sendMssage(new Message(null, "Вошел в группу: " + user.getId()));
                     } else {
-
+                        outputStream.writeObject(new Message(null, "Неизвестная команда"));
                     }
+                }
+                else {
+
                 }
 
             }
@@ -56,7 +58,7 @@ public class ClientHandler extends Thread{
             socket.close();
 
         } catch (SocketException ex) {
-            System.out.println(client.getId() + "Вышел");
+            System.out.println(user.getId() + "Вышел");
         } catch (IOException ex) {
             System.err.println("Кливент " + count + "  неожиданно отключился");
         } catch (ClassNotFoundException ex) {

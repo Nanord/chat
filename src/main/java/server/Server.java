@@ -1,6 +1,6 @@
 package server;
 
-import data.Client;
+import data.User;
 import data.Group;
 
 import java.io.*;
@@ -10,14 +10,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Server {
     //static ExecutorService executorService = Executors.newFixedThreadPool(4);
-    private static List<Client> clientList;
-    private static List<Group> groupList;
+    private static List<User> userList = new ArrayList<User>();
+    private static List<Group> groupList = new ArrayList<Group>();
 
     private ServerSocket serverSocket;
     private int port;
@@ -29,9 +26,6 @@ public class Server {
     public void start() throws IOException {
         serverSocket = new ServerSocket(port);
         System.out.println("Ждем клиентов");
-
-        groupList = new ArrayList<Group>();
-        clientList = new ArrayList<Client>();
 
         groupList.add(new Group(null, "general"));
 
@@ -54,20 +48,20 @@ public class Server {
         return groupList;
     }
 
-    public synchronized static List<Client> getClientList() {
-        return clientList;
+    public synchronized static List<User> getUserList() {
+        return userList;
     }
 
-    public List<Client> getAllCliet() {
-        List<Client> clients = new ArrayList<Client>();
+    public List<User> getAllCliet() {
+        List<User> users = new ArrayList<User>();
         for (Group group :
                 groupList) {
-            for (Client cloent :
-                    group.getClientList()) {
-                clients.add(cloent);
+            for (User user :
+                    group.getUserList()) {
+                users.add(user);
             }
         }
-        return clients;
+        return users;
     }
 
 

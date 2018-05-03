@@ -1,20 +1,22 @@
 package data;
 
-public class Message {
-    private Client client;
+import java.io.Serializable;
+
+public class Message implements Serializable {
+    private User user;
     private String data;
 
-    public Message(Client client, String data) {
-        this.client = client;
+    public Message(User user, String data) {
+        this.user = user;
         this.data = data;
     }
 
-    public Client getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getData() {
