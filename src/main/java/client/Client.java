@@ -1,5 +1,8 @@
 package client;
 
+import data.Message;
+import data.User;
+
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.Socket;
@@ -30,28 +33,27 @@ public class Client {
 
     public void run() {
         try {
-            getIpAddressServer(false);
+            getIpAddressServer(true);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);
             out.println("Подключился к серверу");
 
-            InputStream sIn = socket.getInputStream();
-            OutputStream sOut = socket.getOutputStream();
+            final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
-            DataInputStream in = new DataInputStream(sIn);
-            DataOutputStream out = new DataOutputStream(sOut);
+            User user = new User(socket, outputStream, null);
 
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
             while (true) {
                 System.out.println("Ваше сообщение: ");
                 line = keyboard.readLine();
-                out.writeUTF(line);
-                out.flush();
 
-                line = in.readUTF();
-                System.out.println("Ответ сервера: " + line);
+                Message msg = new Message(user, line);
+                outputStream.writeObject(msg);
+
+                //System.out.println("Ответ сервера: " + ((Message)inputStream.readObject()).getData());
 
                 System.out.println();
             }
@@ -76,7 +78,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
-        Client client = new Client(Integer.parseInt(System.getProperty("port")));
+        Client client = new Client(7777);
         client.run();
     }
 }
