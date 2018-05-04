@@ -34,9 +34,11 @@ public class ClientHandler extends Thread{
             infoSend.close();//возможна проблема с тем что сокет может быть закрыт
 
         } catch (SocketException ex) {
-            System.out.println(count + "Вышел");
+            System.out.println(count + "Вышел(SocketExeprion");
+            ex.printStackTrace();
         } catch (IOException ex) {
             System.err.println("Кливент " + count + "  неожиданно отключился");
+            ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
             System.out.println("Присланный объект не соответствует протоколу");
             ex.printStackTrace();

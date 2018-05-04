@@ -56,14 +56,16 @@ public class Client {
                 if(line.substring(0,1).equalsIgnoreCase("/")) {
                     String[] comm_text = line.split(" ");
                     String comm = comm_text[0];
-                    String text = comm_text[1];
+                    String text = (comm_text.length > 1)? comm_text[1] : null;
                     message = new Message(user, comm, text);
                 }
                 else {
                     message = new Message(user, "/send", line);
                 }
                 outputStream.writeObject(message);
-                //System.out.println("Ответ сервера: " + ((Message)inputStream.readObject()).getData());
+
+
+                System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
 
                 System.out.println();
             }

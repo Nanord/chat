@@ -5,6 +5,7 @@ import data.User;
 import server.InfoSend;
 import server.command.commandsList.Command;
 import server.command.commandsList.Exit;
+import server.command.commandsList.SendMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class CommandHandler {
 
     private void addComands() {
         commandList.add(new Exit());
+        commandList.add(new SendMessage());
     }
 
 

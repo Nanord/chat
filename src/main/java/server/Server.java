@@ -82,7 +82,9 @@ public class Server {
             System.err.println("Неудалось узнать IP сервера");
         } catch (IOException ex) {
             System.err.println("IOExeprion on server.Server");
+            ex.printStackTrace();
         } catch (Exception ex) {
+            System.err.println("ХЗ Exeption");
             ex.printStackTrace();
         }
     }
