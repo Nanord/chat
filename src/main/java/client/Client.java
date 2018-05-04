@@ -42,7 +42,9 @@ public class Client {
             final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
-            User user = new User(socket, outputStream, null);
+
+            User user = new User("Alex");
+            outputStream.writeObject(new Message(user, "/serverHello", null));
 
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
@@ -50,9 +52,17 @@ public class Client {
                 System.out.println("Ваше сообщение: ");
                 line = keyboard.readLine();
 
-                Message msg = new Message(user, line);
-                outputStream.writeObject(msg);
-
+                Message message;
+                if(line.substring(0,1).equalsIgnoreCase("/")) {
+                    String[] comm_text = line.split(" ");
+                    String comm = comm_text[0];
+                    String text = comm_text[1];
+                    message = new Message(user, comm, text);
+                }
+                else {
+                    message = new Message(user, "/send", line);
+                }
+                outputStream.writeObject(message);
                 //System.out.println("Ответ сервера: " + ((Message)inputStream.readObject()).getData());
 
                 System.out.println();

@@ -21,11 +21,20 @@
     </build>
     <dependencies>
 
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-async</artifactId>
-            <version>3.0.4</version>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.6.3</version>
         </dependency>
+
+        <!--JSON parser -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.4</version>
+        </dependency>
+
 
     </dependencies>
 

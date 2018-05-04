@@ -2,6 +2,7 @@ package server;
 
 import data.User;
 import data.Group;
+import server.command.CommandHandler;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -9,14 +10,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Server {
     //static ExecutorService executorService = Executors.newFixedThreadPool(4);
-    private static List<User> userList = new ArrayList<User>();
-    private static List<Group> groupList = new ArrayList<Group>();
+    private static List<User> userList = Collections.synchronizedList(new ArrayList<User>());
+    private static List<Group> groupList = Collections.synchronizedList(new ArrayList<Group>());
 
-    private ServerSocket serverSocket;
     private int port;
 
     public Server(int port) {
@@ -24,11 +25,14 @@ public class Server {
     }
 
     public void start() throws IOException {
-        serverSocket = new ServerSocket(port);
+
+        ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Ждем клиентов");
 
+        //Стартовая группа
         groupList.add(new Group(null, "general"));
-
+        //Комманды
+        CommandHandler comm = new CommandHandler();
 
         int count = 1; //счетчиек клиентов
         while ( !serverSocket.isClosed() ) {
@@ -52,17 +56,17 @@ public class Server {
         return userList;
     }
 
-    public List<User> getAllCliet() {
+    /*public List<User> getAllCliet() {
         List<User> users = new ArrayList<User>();
         for (Group group :
                 groupList) {
-            for (User user :
+            for (InfoSend user :
                     group.getUserList()) {
-                users.add(user);
+                users.add(user.getUser());
             }
         }
         return users;
-    }
+    }*/
 
 
     //////////////////////////////////////////////////////////////////////////

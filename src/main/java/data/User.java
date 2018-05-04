@@ -1,52 +1,30 @@
 package data;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.bson.types.ObjectId;
+
 import java.io.Serializable;
-import java.net.Socket;
 
-public class User  {
-    private String id;
+public class User  implements Serializable {
+    private ObjectId id;
+    private String name;
 
-    private Socket socket;
-    private ObjectOutputStream outputStream;
-    private ObjectInputStream inputStream;
-
-    public User(Socket socket, ObjectOutputStream os, ObjectInputStream is) {
-        this.socket = socket;
-        outputStream = os;
-        inputStream = is;
+    public User(String name) {
+        this.name = name;
     }
 
-    public ObjectInputStream getInputStream() {
-        return inputStream;
+    public String getName() {
+        return name;
     }
 
-    public void setInputStream(ObjectInputStream inputStream) {
-        this.inputStream = inputStream;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ObjectOutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    public void setOutputStream(ObjectOutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 }

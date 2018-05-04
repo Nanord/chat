@@ -1,9 +1,10 @@
 package data;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-public class Group {
+public class Group implements Serializable {
     private List<Message> messageList;
     private String nameGroup;
     private List<User> userList;
@@ -14,12 +15,12 @@ public class Group {
     }
 
 
-    public void sendMssage(Message message) throws IOException {
+    /*public void sendMssage(Message message) throws IOException {
         for(User user :
                 userList) {
             user.getOutputStream().writeObject(message);
         }
-    }
+    }*/
 
     public void addMessage(Message message) {
         messageList.add(message);
@@ -27,6 +28,10 @@ public class Group {
 
     public void addUser(User user) {
         userList.add(user);
+    }
+
+    public void removeUser(User user) {
+        userList.remove(user);
     }
 
     public List<User> getUserList() {

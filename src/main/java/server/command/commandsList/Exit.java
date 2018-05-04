@@ -1,23 +1,20 @@
 package server.command.commandsList;
 
-import server.command.Command;
+import data.Message;
+import server.InfoSend;
 
-public class Exit implements Command {
-    private static String text = "-q";
-    private String command;
+import java.io.IOException;
+
+public class Exit implements Command{
+    private final static String commandText = "/exit";
 
     @Override
-    public void setText(String text) {
-        this.text = text;
+    public void make(Message msg, InfoSend infoSend) throws IOException {
+        infoSend.sendMessage(new Message(null, "/exit", "Пока("));
+        infoSend.getSocket().close();
     }
 
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public String getCommand() {
-        return command;
+    public String getCommandText() {
+        return commandText;
     }
 }
