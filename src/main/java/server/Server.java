@@ -1,5 +1,6 @@
 package server;
 
+import data.InfoSend;
 import data.User;
 import data.Group;
 import server.command.CommandHandler;
@@ -9,28 +10,33 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
-    //static ExecutorService executorService = Executors.newFixedThreadPool(4);
-    private static List<User> userList = Collections.synchronizedList(new ArrayList<User>());
-    private static List<Group> groupList = Collections.synchronizedList(new ArrayList<Group>());
+    //Сделать пул потоков с Chached размером потоков, посмотреть как изменить время
+    private ExecutorService executorService;
+
+
+    //
+    private static Set<User> userList = Collections.synchronizedSet(new HashSet<User>());
+    private static Map<String, Group> groupList = Collections.synchronizedMap(new HashMap<String, Group>());
 
     private int port;
 
     public Server(int port) {
+        this.executorService = Executors.newCachedThreadPool();
         this.port = port;
     }
 
-    public void start() throws IOException {
-
+    public void startServer() throws IOException {
+        //Сделать SSLSocket
         ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Ждем клиентов");
 
         //Стартовая группа
-        groupList.add(new Group(null, "general"));
+        groupList.put("general" ,new Group(null, "general"));
         //Комманды
         CommandHandler comm = new CommandHandler();
 
@@ -40,43 +46,48 @@ public class Server {
             Socket socket = serverSocket.accept();
             System.out.println("Подключился клиент " + count + " : " + socket.getInetAddress().getHostAddress());
 
-            ClientHandler clientHandler = new ClientHandler(count, socket);
-            clientHandler.start();
+            executorService.submit(new ClientHandler(count, socket));
+            //ClientHandler clientHandler = new ClientHandler(count, socket);
+           // clientHandler.start();
 
             count++;
         }
-
     }
 
-    public synchronized static List<Group> getGroupList() {
-        return groupList;
+    public static Group getMainGoup() {
+        return groupList.get("general");
     }
 
-    public synchronized static List<User> getUserList() {
-        return userList;
-    }
-
-    /*public List<User> getAllCliet() {
-        List<User> users = new ArrayList<User>();
-        for (Group group :
-                groupList) {
-            for (InfoSend user :
-                    group.getUserList()) {
-                users.add(user.getUser());
-            }
+    public static boolean addUser(User user, InfoSend infoSend) {
+        if(userList.contains(user)) {
+            return false;
+        } else {
+            userList.add(user);
+            groupList.get("general").addUser(user, infoSend);
+            return true;
         }
-        return users;
-    }*/
+    }
 
+    public static void addGroup(Group group) {
+        groupList.put(group.getNameGroup(), group);
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7777;
+            short port = 7776;
             Server server = new Server(port);
-            server.start();
+            server.startServer();
 
         } catch (UnknownHostException ex) {
             System.err.println("Неудалось узнать IP сервера");

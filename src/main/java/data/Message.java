@@ -10,6 +10,7 @@ public class Message implements Serializable {
 
     private String commandText;
     private String data;
+
     private Group group;
 
     public Message(User user,String commandText, String data) {

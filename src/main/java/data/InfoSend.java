@@ -1,4 +1,4 @@
-package server;
+package data;
 
 import data.Message;
 
@@ -14,8 +14,8 @@ public class InfoSend {
 
     public InfoSend(Socket socket) throws IOException{
         this.socket = socket;
-        inputStream = new ObjectInputStream(this.socket.getInputStream());
-        outputStream = new ObjectOutputStream(this.socket.getOutputStream());
+        inputStream = new ObjectInputStream(socket.getInputStream());
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
     }
 
     public Message readMessage() throws IOException, ClassNotFoundException {
@@ -28,6 +28,7 @@ public class InfoSend {
 
     public void sendMessage(Message msg) throws IOException{
         outputStream.writeObject(msg);
+        outputStream.flush();
     }
 
     public void setOutputStream(ObjectOutputStream outputStream) {
@@ -46,5 +47,9 @@ public class InfoSend {
         inputStream.close();
         outputStream.close();
         socket.close();
+    }
+
+    public boolean isClose() {
+        return socket.isClosed();
     }
 }

@@ -1,15 +1,13 @@
 package server;
 
-import data.Group;
-import data.Message;
-import data.User;
+import data.InfoSend;
 import server.command.CommandHandler;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class ClientHandler extends Thread{
+public class ClientHandler implements Runnable{
     private InfoSend infoSend;
     private int count;
 
@@ -21,21 +19,16 @@ public class ClientHandler extends Thread{
     @Override
     public void run() {
         try {
-
-            //Сообщение приветсвия
-            if (infoSend.readMessage().getCommandText().equalsIgnoreCase("/serverHello"));
-            {
-                while (!infoSend.getSocket().isClosed()) {
-                    Message message = infoSend.readMessage();
-                    CommandHandler.makeCommand(message, infoSend);
-                }
+            while (!infoSend.getSocket().isClosed()) {
+                CommandHandler.makeCommand( infoSend.readMessage(), infoSend );
             }
-
-            infoSend.close();//возможна проблема с тем что сокет может быть закрыт
+            System.out.println(count + " Вышел");
+            if(!infoSend.isClose())
+                infoSend.close();
 
         } catch (SocketException ex) {
-            System.out.println(count + "Вышел(SocketExeprion");
-            ex.printStackTrace();
+            System.out.println(count + " Вышел(SocketExeprion)");
+           // ex.printStackTrace();
         } catch (IOException ex) {
             System.err.println("Кливент " + count + "  неожиданно отключился");
             ex.printStackTrace();
@@ -45,7 +38,7 @@ public class ClientHandler extends Thread{
         }
     }
 
-    public Group getGroup(String name) {
+    /*public Group getGroup(String name) {
         for (Group group:
                 Server.getGroupList()) {
             if(group.getNameGroup().equalsIgnoreCase(name)) {
@@ -53,6 +46,6 @@ public class ClientHandler extends Thread{
             }
         }
         return null;
-    }
+    }*/
 
 }

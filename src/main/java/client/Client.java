@@ -31,7 +31,7 @@ public class Client {
         socket = new Socket(ipAddressServer, serverPort);
     }
 
-    public void run() {
+    public void run() throws IOException, ClassNotFoundException{
         try {
             getIpAddressServer(true);
             out.println("IP адрес server: " + ipAddressServer);
@@ -45,10 +45,11 @@ public class Client {
 
             User user = new User("Alex");
             outputStream.writeObject(new Message(user, "/serverHello", null));
+            out.println(((Message)inputStream.readObject()).getData());
 
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
-            while (true) {
+            while (!socket.isClosed()) {
                 System.out.println("Ваше сообщение: ");
                 line = keyboard.readLine();
 
@@ -63,21 +64,19 @@ public class Client {
                     message = new Message(user, "/send", line);
                 }
                 outputStream.writeObject(message);
+                outputStream.flush();
 
 
                 System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
-
                 System.out.println();
             }
+            socket.close();
+            inputStream.close();
+            outputStream.close();
 
         } catch (UnknownHostException ex) {
             err.println("Неудалось узнать адресс ");
-        } catch (IOException e) {
-            err.println("IOExeption on Clint");
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-
     }
     public int getServerPort() {
         return serverPort;
@@ -89,8 +88,8 @@ public class Client {
 
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-    public static void main(String[] args) {
-        Client client = new Client(7777);
+    public static void main(String[] args) throws Exception {
+        Client client = new Client(7776);
         client.run();
     }
 }

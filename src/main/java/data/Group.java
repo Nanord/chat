@@ -1,41 +1,57 @@
 package data;
 
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class Group implements Serializable {
+public class Group {
     private List<Message> messageList;
     private String nameGroup;
-    private List<User> userList;
+    private Set<User> userList;
+    private Set<InfoSend> onlineUsers;
 
-    public Group(List<User> userList, String nameGroup) {
-        this.userList = userList;
+    public Group(Set<User> userList, String nameGroup) {
+        if(userList != null)
+            this.userList = userList;
+        else
+            this.userList = new HashSet<User>();
+
         this.nameGroup = nameGroup;
+        this.messageList = new ArrayList<Message>();
+        this.onlineUsers = new HashSet<InfoSend>();
     }
 
 
-    /*public void sendMssage(Message message) throws IOException {
-        for(User user :
-                userList) {
-            user.getOutputStream().writeObject(message);
-        }
-    }*/
-
-    public void addMessage(Message message) {
+    public void sendMssage(Message message) throws IOException {
         messageList.add(message);
+        for (InfoSend user :
+                onlineUsers) {
+            user.sendMessage(message);
+        }
+
     }
 
-    public void addUser(User user) {
+    public void addUser(User user, InfoSend infoSend) {
         userList.add(user);
+        onlineUsers.add(infoSend);
     }
 
     public void removeUser(User user) {
         userList.remove(user);
     }
 
-    public List<User> getUserList() {
+    public Set<User> getUserList() {
         return userList;
+    }
+
+    public void addOnlineUser(InfoSend infoSend) {
+        onlineUsers.add(infoSend);
+    }
+
+    public void removeOnlineUser(InfoSend infoSend) {
+        onlineUsers.remove(infoSend);
     }
 
     public List<Message> getMessageList() {
