@@ -1,5 +1,6 @@
 package client;
 
+import data.InfoSend;
 import data.Message;
 import data.User;
 
@@ -39,17 +40,21 @@ public class Client {
             socket = new Socket(ipAddressServer, serverPort);
             out.println("Подключился к серверу");
 
-            final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            /*final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+*/
+            InfoSend infoSend = new InfoSend(socket);
 
 
             User user = new User("Alex");
-            outputStream.writeObject(new Message(user, "/serverHello", null));
-            out.println(((Message)inputStream.readObject()).getData());
+            //outputStream.writeObject(new Message(user, "/serverHello", null));
+            infoSend.sendMessage(new Message(user, "/serverHello", null));
+            //out.println(((Message)inputStream.readObject()).getData());
+            out.println(infoSend.readMessage().getData());
 
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
-            while (!socket.isClosed()) {
+            while (!infoSend.isClose()) {
                 System.out.println("Ваше сообщение: ");
                 line = keyboard.readLine();
 
@@ -63,17 +68,21 @@ public class Client {
                 else {
                     message = new Message(user, "/send", line);
                 }
-                outputStream.writeObject(message);
-                outputStream.flush();
+                //outputStream.writeObject(message);
+                //outputStream.flush();
+                infoSend.sendMessage(message);
 
 
-                System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
+               // System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
+                out.println(infoSend.readMessage().getData());
+
                 System.out.println();
             }
-            socket.close();
+            /*socket.close();
             inputStream.close();
             outputStream.close();
-
+*/
+            infoSend.close();
         } catch (UnknownHostException ex) {
             err.println("Неудалось узнать адресс ");
         }
@@ -89,7 +98,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws Exception {
-        Client client = new Client(7776);
+        Client client = new Client(7775);
         client.run();
     }
 }

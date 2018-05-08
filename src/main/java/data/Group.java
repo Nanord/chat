@@ -12,7 +12,7 @@ public class Group {
     private Set<User> userList;
     private Set<InfoSend> onlineUsers;
 
-    public Group(Set<User> userList, String nameGroup) {
+    public Group(String nameGroup, Set<User> userList) {
         if(userList != null)
             this.userList = userList;
         else
@@ -21,6 +21,10 @@ public class Group {
         this.nameGroup = nameGroup;
         this.messageList = new ArrayList<Message>();
         this.onlineUsers = new HashSet<InfoSend>();
+    }
+
+    public Group(String nameGroup) {
+        this(nameGroup, null);
     }
 
 
@@ -38,8 +42,9 @@ public class Group {
         onlineUsers.add(infoSend);
     }
 
-    public void removeUser(User user) {
+    public void removeUser(User user, InfoSend infoSend) {
         userList.remove(user);
+        onlineUsers.remove(infoSend);
     }
 
     public Set<User> getUserList() {

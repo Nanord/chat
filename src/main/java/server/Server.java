@@ -36,7 +36,7 @@ public class Server {
         System.out.println("Ждем клиентов");
 
         //Стартовая группа
-        groupList.put("general" ,new Group(null, "general"));
+        groupList.put("general" ,new Group("general"));
         //Комманды
         CommandHandler comm = new CommandHandler();
 
@@ -47,8 +47,6 @@ public class Server {
             System.out.println("Подключился клиент " + count + " : " + socket.getInetAddress().getHostAddress());
 
             executorService.submit(new ClientHandler(count, socket));
-            //ClientHandler clientHandler = new ClientHandler(count, socket);
-           // clientHandler.start();
 
             count++;
         }
@@ -68,6 +66,20 @@ public class Server {
         }
     }
 
+    public static Group joinGroup(String nameGroup, User user, InfoSend infoSend) {
+        Group group = groupList.get(nameGroup);
+        if(group != null) {
+            group.addUser(user, infoSend);
+            return group;
+        } else {
+            return null;
+        }
+    }
+
+    public static Group getGroup(String namGroup) {
+        return groupList.get(namGroup);
+    }
+
     public static void addGroup(Group group) {
         groupList.put(group.getNameGroup(), group);
     }
@@ -85,7 +97,7 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7776;
+            short port = 7775;
             Server server = new Server(port);
             server.startServer();
 

@@ -29,6 +29,7 @@ public class CommandHandler {
         commandList.put("/send", new SendMessage());
         commandList.put("/createGroup", new CreateGroup());
         commandList.put("/serverHello", new HelloMessage());
+        commandList.put("/joinGroup", new JoinGroup());
     }
 
 
