@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 
 import static java.lang.System.*;
@@ -28,9 +29,6 @@ public class Client {
                 : System.getProperty("ipServer");
     }
 
-    private void creteSocket() throws IOException {
-        socket = new Socket(ipAddressServer, serverPort);
-    }
 
     public void run() throws IOException, ClassNotFoundException{
         try {
@@ -40,21 +38,20 @@ public class Client {
             socket = new Socket(ipAddressServer, serverPort);
             out.println("Подключился к серверу");
 
-            /*final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-*/
-            InfoSend infoSend = new InfoSend(socket);
+            //InfoSend infoSend = new InfoSend(socket);
 
-
-            User user = new User("Alex");
-            //outputStream.writeObject(new Message(user, "/serverHello", null));
-            infoSend.sendMessage(new Message(user, "/serverHello", null));
-            //out.println(((Message)inputStream.readObject()).getData());
-            out.println(infoSend.readMessage().getData());
+            Random random = new Random();
+            User user = new User(String.valueOf(random.nextInt()));
+            outputStream.writeObject(new Message(user, "/serverHello", null));
+           // infoSend.sendMessage(new Message(user, "/serverHello", null));
+            out.println(((Message)inputStream.readObject()).getData());
+            //out.println(infoSend.readMessage().getData());
 
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
-            while (!infoSend.isClose()) {
+            while (true) {
                 System.out.println("Ваше сообщение: ");
                 line = keyboard.readLine();
 
@@ -68,21 +65,17 @@ public class Client {
                 else {
                     message = new Message(user, "/send", line);
                 }
-                //outputStream.writeObject(message);
-                //outputStream.flush();
-                infoSend.sendMessage(message);
+                outputStream.writeObject(message);
+                outputStream.flush();
+                //infoSend.sendMessage(message);
 
 
-               // System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
-                out.println(infoSend.readMessage().getData());
+                System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
+                //out.println(infoSend.readMessage().getData());
 
                 System.out.println();
             }
-            /*socket.close();
-            inputStream.close();
-            outputStream.close();
-*/
-            infoSend.close();
+            //infoSend.close();
         } catch (UnknownHostException ex) {
             err.println("Неудалось узнать адресс ");
         }
@@ -98,7 +91,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws Exception {
-        Client client = new Client(7775);
+        Client client = new Client(7791);
         client.run();
     }
 }

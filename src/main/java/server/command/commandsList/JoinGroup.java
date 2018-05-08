@@ -12,11 +12,20 @@ public class JoinGroup implements Command{
     public void make(Message msg, InfoSend infoSend) throws IOException {
         Server.getMainGoup().removeUser(msg.getUser(), infoSend);
 
-        Group group = Server.joinGroup(msg.getData(), msg.getUser(), infoSend);
+        Group group = Server.joinGroup(msg.getData());
         if(group != null) {
-          group.sendMssage(new Message(null, msg.getCommandText(),  "ResponseServer: Поприветствуйте: " + msg.getUser().getName()));
+          group.sendMssage(
+                  new Message(
+                          null,
+                          msg.getCommandText(),
+                          "ResponseServer: Поприветствуйте: " + msg.getUser().getName(),
+                          group.getNameGroup()));
         } else {
-            infoSend.sendMessage(new Message(null, "/error", "Группы с таким именем не существует"));
+            infoSend.sendMessage(
+                    new Message(
+                            null,
+                            "/error",
+                            "Группы с таким именем не существует"));
         }
     }
 }

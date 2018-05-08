@@ -3,6 +3,8 @@ package data;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.Timer;
 
 public class Message implements Serializable {
     private ObjectId id;
@@ -11,12 +13,21 @@ public class Message implements Serializable {
     private String commandText;
     private String data;
 
-    private Group group;
+    private String nameGroup;
 
-    public Message(User user,String commandText, String data) {
+    private String time;
+
+    public Message(User user,String commandText, String data, String nameGroup) {
         this.user = user;
         this.commandText = commandText;
         this.data = data;
+        this.nameGroup = nameGroup;
+
+        time = new Date().toString();
+    }
+
+    public Message(User user, String commandText, String data) {
+        this(user, commandText, data, null);
     }
 
     public User getUser() {
@@ -35,12 +46,12 @@ public class Message implements Serializable {
         this.data = data;
     }
 
-    public Group getGroup() {
-        return group;
+    public String getNameGroup() {
+        return nameGroup;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public void setNameGroup(String nameGroup) {
+        this.nameGroup = nameGroup;
     }
 
     public ObjectId getId() {

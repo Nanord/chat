@@ -15,11 +15,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    //Сделать пул потоков с Chached размером потоков, посмотреть как изменить время
     private ExecutorService executorService;
 
 
-    //
+    //Скорее всего эти списки нужно оборачивать из за одновременного чтения через итератор и записи в коллекцию
     private static Set<User> userList = Collections.synchronizedSet(new HashSet<User>());
     private static Map<String, Group> groupList = Collections.synchronizedMap(new HashMap<String, Group>());
 
@@ -66,14 +65,8 @@ public class Server {
         }
     }
 
-    public static Group joinGroup(String nameGroup, User user, InfoSend infoSend) {
-        Group group = groupList.get(nameGroup);
-        if(group != null) {
-            group.addUser(user, infoSend);
-            return group;
-        } else {
-            return null;
-        }
+    public static Group joinGroup(String nameGroup) {
+        return groupList.get(nameGroup);
     }
 
     public static Group getGroup(String namGroup) {
@@ -97,7 +90,7 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7775;
+            short port = 7791;
             Server server = new Server(port);
             server.startServer();
 

@@ -10,6 +10,6 @@ public class SendMessage implements Command{
 
     @Override
     public void make(Message msg, InfoSend infoSend) throws IOException {
-        Server.getMainGoup().sendMssage(msg);
+        Server.getGroup(msg.getNameGroup()).sendMssage(msg);
     }
 }

@@ -29,6 +29,9 @@ public class ClientHandler implements Runnable{
         } catch (SocketException ex) {
             System.out.println(count + " Вышел(SocketExeprion)");
            // ex.printStackTrace();
+        } catch (EOFException ex) {
+            System.err.println("Ошибка чтения сообщения из потока");
+            ex.printStackTrace();
         } catch (IOException ex) {
             System.err.println("Кливент " + count + "  неожиданно отключился");
             ex.printStackTrace();

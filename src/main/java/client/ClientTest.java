@@ -115,7 +115,7 @@ public class ClientTest extends Thread {
     public static void main(String[] args) {
         int count = 1;
         for (int i = 0; i < 2; i++) {
-            ClientTest client = new ClientTest(7776, count);
+            ClientTest client = new ClientTest(7777, count);
             client.start();
 
             count++;

@@ -10,7 +10,7 @@ public class Group {
     private List<Message> messageList;
     private String nameGroup;
     private Set<User> userList;
-    private Set<InfoSend> onlineUsers;
+    private Set<InfoSend> onlineUsers;//Переписать с использованием HashMap
 
     public Group(String nameGroup, Set<User> userList) {
         if(userList != null)
