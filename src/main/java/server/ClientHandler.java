@@ -20,11 +20,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         try {
             while (!infoSend.isClosed()) {
-                ///////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////
-                //Переписать в InfoSend работу с потоками ввода вывода
-                ///////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////
+
                 CommandHandler.makeCommand( infoSend.readMessage(), infoSend );
             }
             System.out.println(count + " Вышел");

@@ -1,9 +1,6 @@
 package testCode;
 
-import org.bson.types.ObjectId;
-
 public final class Person {
-    private ObjectId id;
     private String name;
     private int age;
     private Address address;
@@ -12,14 +9,6 @@ public final class Person {
         this.name = name;
         this.age = age;
         this.address = address;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(final ObjectId id) {
-        this.id = id;
     }
 
     public String getName() {

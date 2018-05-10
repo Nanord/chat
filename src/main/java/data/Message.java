@@ -1,13 +1,11 @@
 package data;
 
-import org.bson.types.ObjectId;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Timer;
 
 public class Message implements Serializable {
-    private ObjectId id;
+
     private User user;
 
     private String commandText;
@@ -54,13 +52,6 @@ public class Message implements Serializable {
         this.nameGroup = nameGroup;
     }
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
 
     public String getCommandText() {
         return commandText;
@@ -68,5 +59,13 @@ public class Message implements Serializable {
 
     public void setCommandText(String commandText) {
         this.commandText = commandText;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

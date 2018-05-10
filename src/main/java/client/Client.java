@@ -63,7 +63,7 @@ public class Client {
                     message = new Message(user, comm, text);
                 }
                 else {
-                    message = new Message(user, "/send", line);
+                    message = new Message(user, "/send", line, "general");
                 }
                 outputStream.writeObject(message);
                 outputStream.flush();
@@ -91,7 +91,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws Exception {
-        Client client = new Client(7791);
+        Client client = new Client(7792);
         client.run();
     }
 }
