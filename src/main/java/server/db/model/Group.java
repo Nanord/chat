@@ -1,16 +1,18 @@
-package data;
+package server.db.model;
+
+import server.InfoSend;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 
 public class Group {
     private List<Message> messageList;
     private String nameGroup;
     private Set<User> userList;
-    private Set<InfoSend> onlineUsers ;//Переписать с использованием HashMap
+    private Set<InfoSend> onlineUsers ;
+
+    //private Map<User, InfoSend> onlineUsers;
 
     public Group(String nameGroup, Set<User> userList) {
         if(userList != null)
@@ -30,17 +32,17 @@ public class Group {
 
     public void sendMssage(Message message) throws IOException {
         messageList.add(message);
-        //Хз насколько быстрее параллельность в данном случае
-        /*onlineUsers.stream()
-                .parallel()
-                .forEach(x -> {
-                    x.sendMessage(message));
-                });*/
-        for (InfoSend user :
-                onlineUsers) {
-            user.sendMessage(message);
+        /*for (Map.Entry<User, InfoSend> user:
+             onlineUsers.entrySet()) {
+            //Чтобы самому себе не отправлять сообщения
+            if(!user.getKey().equals(message.getUser())) {
+                user.getValue().sendMessage(message);
+            }
+        }*/
+        for (InfoSend infoSend:
+             onlineUsers) {
+            infoSend.sendMessage(message);
         }
-
     }
 
 

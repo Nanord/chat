@@ -1,6 +1,5 @@
 package server;
 
-import data.InfoSend;
 import server.command.CommandHandler;
 
 import java.io.*;

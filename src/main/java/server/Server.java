@@ -1,8 +1,7 @@
 package server;
 
-import data.InfoSend;
-import data.User;
-import data.Group;
+import server.db.model.User;
+import server.db.model.Group;
 import server.command.CommandHandler;
 
 import java.io.*;

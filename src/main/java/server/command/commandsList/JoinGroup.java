@@ -1,8 +1,8 @@
 package server.command.commandsList;
 
-import data.Group;
-import data.InfoSend;
-import data.Message;
+import server.db.model.Group;
+import server.InfoSend;
+import server.db.model.Message;
 import server.Server;
 
 import java.io.IOException;

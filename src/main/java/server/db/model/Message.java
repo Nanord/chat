@@ -1,8 +1,9 @@
-package data;
+package server.db.model;
+
+import server.db.model.User;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Timer;
 
 public class Message implements Serializable {
 

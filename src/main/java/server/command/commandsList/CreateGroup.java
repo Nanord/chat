@@ -1,13 +1,11 @@
 package server.command.commandsList;
 
-import data.Group;
-import data.Message;
-import data.InfoSend;
-import data.User;
+import server.db.model.Group;
+import server.db.model.Message;
+import server.InfoSend;
 import server.Server;
 
 import java.io.IOException;
-import java.util.HashSet;
 
 public class CreateGroup implements Command{
 

@@ -1,6 +1,6 @@
-package data;
+package server;
 
-import data.Message;
+import server.db.model.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

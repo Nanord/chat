@@ -1,7 +1,7 @@
 package server.command.commandsList;
 
-import data.InfoSend;
-import data.Message;
+import server.InfoSend;
+import server.db.model.Message;
 import server.Server;
 
 import java.io.IOException;

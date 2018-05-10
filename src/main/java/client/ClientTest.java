@@ -1,8 +1,7 @@
 package client;
 
-import data.InfoSend;
-import data.Message;
-import data.User;
+import server.db.model.Message;
+import server.db.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

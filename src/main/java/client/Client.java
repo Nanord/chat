@@ -1,8 +1,7 @@
 package client;
 
-import data.InfoSend;
-import data.Message;
-import data.User;
+import server.db.model.Message;
+import server.db.model.User;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -26,13 +25,13 @@ public class Client {
     private void getIpAddressServer(boolean status) throws  UnknownHostException{
         ipAddressServer = status
                 ? Inet4Address.getLocalHost().getHostAddress()
-                : System.getProperty("ipServer");
+                : "10.182.1.123";
     }
 
 
     public void run() throws IOException, ClassNotFoundException{
         try {
-            getIpAddressServer(true);
+            getIpAddressServer(false);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);
