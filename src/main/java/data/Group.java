@@ -10,7 +10,7 @@ public class Group {
     private List<Message> messageList;
     private String nameGroup;
     private Set<User> userList;
-    private Set<InfoSend> onlineUsers;//Переписать с использованием HashMap
+    private Set<InfoSend> onlineUsers ;//Переписать с использованием HashMap
 
     public Group(String nameGroup, Set<User> userList) {
         if(userList != null)
@@ -30,12 +30,19 @@ public class Group {
 
     public void sendMssage(Message message) throws IOException {
         messageList.add(message);
+        //Хз насколько быстрее параллельность в данном случае
+        /*onlineUsers.stream()
+                .parallel()
+                .forEach(x -> {
+                    x.sendMessage(message));
+                });*/
         for (InfoSend user :
                 onlineUsers) {
             user.sendMessage(message);
         }
 
     }
+
 
     public void addUser(User user, InfoSend infoSend) {
         userList.add(user);

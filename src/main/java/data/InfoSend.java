@@ -49,7 +49,7 @@ public class InfoSend {
         socket.close();
     }
 
-    public boolean isClose() {
+    public boolean isClosed() {
         return socket.isClosed();
     }
 }

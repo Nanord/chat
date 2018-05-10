@@ -19,11 +19,16 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         try {
-            while (!infoSend.getSocket().isClosed()) {
+            while (!infoSend.isClosed()) {
+                ///////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////
+                //Переписать в InfoSend работу с потоками ввода вывода
+                ///////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////
                 CommandHandler.makeCommand( infoSend.readMessage(), infoSend );
             }
             System.out.println(count + " Вышел");
-            if(!infoSend.isClose())
+            if(!infoSend.isClosed())
                 infoSend.close();
 
         } catch (SocketException ex) {

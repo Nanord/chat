@@ -36,8 +36,8 @@ public class Server {
 
         //Стартовая группа
         groupList.put("general" ,new Group("general"));
-        //Комманды
-        CommandHandler comm = new CommandHandler();
+        //Инициализация Комманд(сделать динамическую инициализацию комманд в этом классе, чтобы не создвывть )
+        CommandHandler comm = CommandHandler.getInstance();
 
         int count = 1; //счетчиек клиентов
         while ( !serverSocket.isClosed() ) {

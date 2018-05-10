@@ -8,12 +8,24 @@ import java.io.IOException;
 import java.util.*;
 
 public class CommandHandler {
-    private static Map<String, Command> commandList = Collections.synchronizedMap(new HashMap<String, Command>());
+    private static volatile CommandHandler instance;
 
-    public CommandHandler() {
+    private CommandHandler() {
         addComands();
     }
 
+    public static CommandHandler getInstance() {
+        if(instance == null) {
+            synchronized (CommandHandler.class) {
+                if(instance == null)
+                    instance = new CommandHandler();
+            }
+        }
+        return instance;
+    }
+
+
+    private static Map<String, Command> commandList = Collections.synchronizedMap(new HashMap<String, Command>());
 
     public static void makeCommand(Message msg, InfoSend infoSend) throws IOException {
         Command command = commandList.get(msg.getCommandText());
