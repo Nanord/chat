@@ -10,6 +10,7 @@ public class SendMessage implements Command{
 
     @Override
     public void make(Message msg, InfoSend infoSend) throws IOException {
-        Server.getGroup(msg.getNameGroup()).sendMssage(msg);
+        if(!msg.getData().isEmpty())
+            Server.getGroup(msg.getNameGroup()).sendMssage(msg);
     }
 }

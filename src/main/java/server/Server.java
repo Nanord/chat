@@ -25,7 +25,8 @@ public class Server {
     private int port;
 
     public Server(int port) {
-        this.executorService = Executors.newCachedThreadPool();
+        //this.executorService = Executors.newCachedThreadPool();
+        this.executorService = Executors.newFixedThreadPool(50);
         this.port = port;
     }
 
