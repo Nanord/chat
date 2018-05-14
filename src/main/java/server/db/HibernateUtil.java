@@ -1,5 +1,6 @@
-package server.db;
-
+package server.db; /**
+ * Created by Nanord on 01.03.2018.
+ */
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -9,14 +10,12 @@ import server.db.model.User;
 
 public class HibernateUtil {
     private static final SessionFactory sessionFactory;
-
     static {
         try {
             sessionFactory = new Configuration()
                     .addAnnotatedClass(User.class)
                     .addAnnotatedClass(Message.class)
                     .addAnnotatedClass(Group.class)
-
                     .configure().buildSessionFactory();
         } catch (Throwable ex) {
             System.out.println("Initial SessionFactory creation failed" + ex);

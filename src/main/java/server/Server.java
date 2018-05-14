@@ -3,6 +3,8 @@ package server;
 import server.db.model.User;
 import server.db.model.Group;
 import server.command.CommandHandler;
+import server.db.service.GroupService;
+import server.db.service.UserService;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -36,9 +38,11 @@ public class Server {
         System.out.println("Ждем клиентов");
 
         //Стартовая группа
-        String nameGroup = "general";
-        groupMap.put(nameGroup ,new Group(nameGroup));
-        //Инициализация Комманд(сделать динамическую инициализацию комманд в этом классе, чтобы не создвывть )
+        GroupService groupService = new GroupService();
+        groupService.getAll().forEach( x -> {
+            groupMap.put(x.getName(), x);
+        });
+        //Инициализация комманд
         CommandHandler comm = CommandHandler.getInstance();
 
         int count = 1; //счетчиек клиентов
@@ -53,22 +57,21 @@ public class Server {
         }
     }
 
-    public static Group getMainGoup() {
-        return groupMap.get("general");
-    }
 
     public static boolean addUser(User user, InfoSend infoSend) {
         if(userList.contains(user)) {
             return false;
         } else {
-            userList.add(user);
+            UserService userService = new UserService();
+            User oldUser = userService.getByEnter(user);
+            if(oldUser == null) {
+                userService.add(user);
+            }
+            userList.add(oldUser != null ? oldUser : user);
             groupMap.get("general").addUser(user, infoSend);
+
             return true;
         }
-    }
-
-    public static Group joinGroup(String nameGroup) {
-        return groupMap.get(nameGroup);
     }
 
     public static Group getGroup(String namGroup) {
@@ -76,7 +79,7 @@ public class Server {
     }
 
     public static void addGroup(Group group) {
-        groupMap.put(group.getNameGroup(), group);
+        groupMap.put(group.getName(), group);
     }
 
     public int getPort() {
@@ -92,7 +95,7 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7793;
+            short port = 7798;
             Server server = new Server(port);
             server.startServer();
 

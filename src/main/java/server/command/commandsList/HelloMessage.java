@@ -12,6 +12,8 @@ public class HelloMessage implements Command{
     public void make(Message msg, InfoSend infoSend) throws IOException {
         //Добовляем юзера
         Server.addUser(msg.getUser(), infoSend);
+
+
         infoSend.sendMessage(new Message(null, msg.getCommandText(), "ResponseServer: Добро пожаловать"));
     }
 }

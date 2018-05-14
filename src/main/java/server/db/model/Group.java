@@ -2,31 +2,43 @@ package server.db.model;
 
 import server.InfoSend;
 
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
 
 
 public class Group {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, insertable = true, updatable = true)
+    private int id;
+
+    @Column(name = "messages")
     private List<Message> messageList;
-    private String nameGroup;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "users")
     private Set<User> userList;
+
     private Set<InfoSend> onlineUsers ;
 
     //private Map<User, InfoSend> onlineUsers;
 
-    public Group(String nameGroup, Set<User> userList) {
+    public Group(String name, Set<User> userList) {
         if(userList != null)
             this.userList = userList;
         else
             this.userList = new HashSet<User>();
 
-        this.nameGroup = nameGroup;
+        this.name = name;
         this.messageList = new ArrayList<Message>();
         this.onlineUsers = new HashSet<InfoSend>();
     }
 
-    public Group(String nameGroup) {
-        this(nameGroup, null);
+    public Group(String name) {
+        this(name, null);
     }
 
 
@@ -39,10 +51,11 @@ public class Group {
                 user.getValue().sendMessage(message);
             }
         }*/
-        for (InfoSend infoSend:
-             onlineUsers) {
-            infoSend.sendMessage(message);
-        }
+        if(userList.contains(message.getUser()))
+            for (InfoSend infoSend:
+                 onlineUsers) {
+                infoSend.sendMessage(message);
+            }
     }
 
 
@@ -55,6 +68,7 @@ public class Group {
         userList.remove(user);
         onlineUsers.remove(infoSend);
     }
+
 
     public Set<User> getUserList() {
         return userList;
@@ -72,11 +86,19 @@ public class Group {
         return messageList;
     }
 
-    public String getNameGroup() {
-        return nameGroup;
+    public String getName() {
+        return name;
     }
 
-    public void setNameGroup(String nameGroup) {
-        this.nameGroup = nameGroup;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

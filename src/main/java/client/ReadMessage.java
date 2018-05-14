@@ -14,29 +14,32 @@ import static java.lang.System.out;
 
 public class ReadMessage implements Runnable {
     private final ObjectInputStream in;
+    private User user;
 
-    public ReadMessage(ObjectInputStream in) {
+    public ReadMessage(ObjectInputStream in, User user) {
         this.in = in;
+        this.user = user;
     }
 
     @Override
     public void run() {
         try {
             while (true) {
-                //wait(1);
+                System.out.println("123");
+                Thread.sleep(100);
                 Message message = (Message)in.readObject();
                 User curUser = message.getUser();
 
                 if(curUser != null) {
-                    err.println(curUser.getName() +
-                            ": " +
-                            message.getData()
-                    );
+                    if(!curUser.getName().equalsIgnoreCase(user.getName()))
+                        err.println(curUser.getName() + ": " + message.getData());
                 } else {
                     err.println(message.getData());
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

@@ -16,20 +16,49 @@ public class WorkClient{
         System.out.println("Подключение к серверу успешно");
 
         //InfoSend infoSend = new InfoSend(socket);
-        final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-        final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+        final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("Введите ваш логин:");
+        String login = keyboard.readLine();
+        System.out.println("Введите ваш пароль:");
+        String password = keyboard.readLine();
+        User user = new User(login, password);
+        out.writeObject(new Message(user, "/serverHello", null));
 
         executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new ReadMessage(inputStream));
+        executorService.submit(new ReadMessage(in, user));
+       /* Thread thread = new Thread(new ReadMessage(in, user));
+        thread.start();*/
 
-        SendMessage sendMessage = new SendMessage(outputStream);
+        SendMessage sendMessage = new SendMessage(out, user);
         sendMessage.run();
+        /*String data = null;
+        String nameGroup = "general";
+        while (true) {
 
+            //System.out.println("Ваше сообщение: ");
+            data = keyboard.readLine();
 
+            Message message = null;
+            if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
+                String[] comm_text = data.split(" ");
+                String comm = comm_text[0];
+                String text = (comm_text.length > 1) ? comm_text[1] : null;
+                if (comm.equalsIgnoreCase("/joinGroup") && comm.equalsIgnoreCase("/createGroup"))
+                    nameGroup = text;
+                message = new Message(user, comm, text);
+            } else {
+                message = new Message(user, "/send", data, nameGroup);
+            }
+            out.writeObject(message);
+        }*/
     }
 
     public static void main(String[] args) throws Exception{
         WorkClient workClient = new WorkClient();
-        workClient.run(7797, "10.182.1.123");
+        workClient.run(7804, "10.182.1.123");
     }
 }
