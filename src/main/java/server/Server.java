@@ -10,16 +10,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Server {
     private ExecutorService executorService;
 
 
     //Скорее всего эти списки нужно оборачивать из за одновременного чтения через итератор и записи в коллекцию
-    private static Set<User> userList = Collections.synchronizedSet(new HashSet<User>());
-    private static Map<String, Group> groupList = Collections.synchronizedMap(new HashMap<String, Group>());
+    //private static Set<User> userList = Collections.synchronizedSet(new HashSet<User>());
+    //private static Map<String, Group> groupList = Collections.synchronizedMap(new HashMap<String, Group>());
+    private static ConcurrentSkipListSet<User> userList = new ConcurrentSkipListSet<User>();
+    private static ConcurrentHashMap<String, Group> groupMap = new ConcurrentHashMap<String, Group>();
 
     private int port;
 
@@ -34,7 +35,8 @@ public class Server {
         System.out.println("Ждем клиентов");
 
         //Стартовая группа
-        groupList.put("general" ,new Group("general"));
+        String nameGroup = "general";
+        groupMap.put(nameGroup ,new Group(nameGroup));
         //Инициализация Комманд(сделать динамическую инициализацию комманд в этом классе, чтобы не создвывть )
         CommandHandler comm = CommandHandler.getInstance();
 
@@ -51,7 +53,7 @@ public class Server {
     }
 
     public static Group getMainGoup() {
-        return groupList.get("general");
+        return groupMap.get("general");
     }
 
     public static boolean addUser(User user, InfoSend infoSend) {
@@ -59,21 +61,21 @@ public class Server {
             return false;
         } else {
             userList.add(user);
-            groupList.get("general").addUser(user, infoSend);
+            groupMap.get("general").addUser(user, infoSend);
             return true;
         }
     }
 
     public static Group joinGroup(String nameGroup) {
-        return groupList.get(nameGroup);
+        return groupMap.get(nameGroup);
     }
 
     public static Group getGroup(String namGroup) {
-        return groupList.get(namGroup);
+        return groupMap.get(namGroup);
     }
 
     public static void addGroup(Group group) {
-        groupList.put(group.getNameGroup(), group);
+        groupMap.put(group.getNameGroup(), group);
     }
 
     public int getPort() {
@@ -89,9 +91,10 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7792;
+            short port = 7793;
             Server server = new Server(port);
             server.startServer();
+
 
         } catch (UnknownHostException ex) {
             System.err.println("Неудалось узнать IP сервера");

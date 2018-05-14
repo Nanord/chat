@@ -31,7 +31,7 @@ public class Client {
 
     public void run() throws IOException, ClassNotFoundException{
         try {
-            getIpAddressServer(false);
+            getIpAddressServer(true);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);

@@ -14,8 +14,8 @@ public class InfoSend {
 
     public InfoSend(Socket socket) throws IOException{
         this.socket = socket;
-        inputStream = new ObjectInputStream(socket.getInputStream());
-        outputStream = new ObjectOutputStream(socket.getOutputStream());
+        outputStream = new ObjectOutputStream(this.socket.getOutputStream());
+        inputStream = new ObjectInputStream(this.socket.getInputStream());
     }
 
     public Message readMessage() throws IOException, ClassNotFoundException {
