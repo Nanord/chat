@@ -52,7 +52,11 @@ public class Client {
 
             outputStream.writeObject(new MessageSend(user, "/serverHello", null, null));
             // infoSend.sendMessage(new Message(user, "/serverHello", null));
-            out.println(((Message)inputStream.readObject()).getData());
+            MessageSend messageSend = ((MessageSend)inputStream.readObject());
+            user = messageSend.getUser();
+            String groupName = messageSend.getNameGroup();
+
+            out.println(messageSend.getData());
             //out.println(infoSend.readMessage().getData());
 
             String line = null;
@@ -68,14 +72,14 @@ public class Client {
                     message = new MessageSend(user, comm, text, null);
                 }
                 else {
-                    message = new MessageSend(user, "/send", line, "general");
+                    message = new MessageSend(user, "/send", line, groupName);
                 }
                 outputStream.writeObject(message);
                 outputStream.flush();
                 //infoSend.sendMessage(message);
 
 
-                System.out.println("Ответ сервера:" + ((Message)inputStream.readObject()).getData());
+                System.out.println(((Message)inputStream.readObject()).getData());
                 //out.println(infoSend.readMessage().getData());
 
                 System.out.println();
