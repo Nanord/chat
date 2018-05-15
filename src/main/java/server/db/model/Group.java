@@ -1,60 +1,72 @@
 package server.db.model;
 
-import server.InfoSend;
+import commonData.MessageSend;
+import org.hibernate.annotations.BatchSize;
+import commonData.InfoSend;
+import server.db.Factory;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
 
-
+@Entity
+@Table(name = "Groups")
+@BatchSize(size = 30)
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     private int id;
 
-    @Column(name = "messages")
-    private List<Message> messageList;
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Message> messageList = new HashSet<Message>();
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "users")
-    private Set<User> userList;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "group_user",
+            joinColumns = {@JoinColumn(name = "id_group")},
+            inverseJoinColumns = {@JoinColumn(name = "id_user")})
+    private Set<User> userList = new HashSet<User>();
 
+    @Transient
     private Set<InfoSend> onlineUsers ;
 
     //private Map<User, InfoSend> onlineUsers;
 
-    public Group(String name, Set<User> userList) {
-        if(userList != null)
-            this.userList = userList;
-        else
-            this.userList = new HashSet<User>();
+    public Group(String name, User user, InfoSend infoSend) {
+        if(user != null)
+            userList.add(user);
 
         this.name = name;
-        this.messageList = new ArrayList<Message>();
         this.onlineUsers = new HashSet<InfoSend>();
+        if(infoSend != null)
+            onlineUsers.add(infoSend);
     }
 
     public Group(String name) {
-        this(name, null);
+        this(name, null, null);
     }
 
 
-    public void sendMssage(Message message) throws IOException {
+    public void sendMssage(MessageSend messageSend) throws IOException {
+        //Сохраняем сообщение в БД
+        final User[] user = {null};
+        userList.forEach( x -> {
+                    if(x.getId() == messageSend.getUser().getId()) {
+                        user[0] = x;
+                    }
+                });
+        Message message = new Message(messageSend, user[0], this);
+        Factory.getMessageService().add(message);
         messageList.add(message);
-        /*for (Map.Entry<User, InfoSend> user:
-             onlineUsers.entrySet()) {
-            //Чтобы самому себе не отправлять сообщения
-            if(!user.getKey().equals(message.getUser())) {
-                user.getValue().sendMessage(message);
-            }
-        }*/
+
+        //Сообщяем всем о новом сообщении
         if(userList.contains(message.getUser()))
             for (InfoSend infoSend:
                  onlineUsers) {
-                infoSend.sendMessage(message);
+                infoSend.sendMessage(messageSend);
             }
     }
 
@@ -82,10 +94,6 @@ public class Group {
         onlineUsers.remove(infoSend);
     }
 
-    public List<Message> getMessageList() {
-        return messageList;
-    }
-
     public String getName() {
         return name;
     }
@@ -101,4 +109,18 @@ public class Group {
     public void setId(int id) {
         this.id = id;
     }
+
+    public Set<Message> getMessageList() {
+        return messageList;
+    }
+
+    public void setMessageList(Set<Message> messageList) {
+        this.messageList = messageList;
+    }
+
+    public void setUserList(Set<User> userList) {
+        this.userList = userList;
+    }
+
+
 }

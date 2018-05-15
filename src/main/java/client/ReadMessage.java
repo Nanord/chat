@@ -1,16 +1,12 @@
 package client;
 
-import server.InfoSend;
 import server.db.model.Message;
 import server.db.model.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.concurrent.Callable;
 
 import static java.lang.System.err;
-import static java.lang.System.in;
-import static java.lang.System.out;
 
 public class ReadMessage implements Runnable {
     private final ObjectInputStream in;

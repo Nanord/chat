@@ -1,4 +1,4 @@
-package client;
+package client.stressTest;
 
 import server.db.model.Message;
 import server.db.model.User;
@@ -64,8 +64,8 @@ public class ClientTest extends Thread {
             final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
             Random random = new Random();
-            User user = new User(String.valueOf(random.nextInt()));
-            outputStream.writeObject(new Message(user, "/serverHello", null));
+           // User user = new User(String.valueOf(random.nextInt()), String.valueOf(random.nextInt()));
+          //  outputStream.writeObject(new Message(user, "/serverHello", null));
             // infoSend.sendMessage(new Message(user, "/serverHello", null));
             out.println(((Message)inputStream.readObject()).getData());
 
@@ -81,13 +81,13 @@ public class ClientTest extends Thread {
                     String[] comm_text = line.split(" ");
                     String comm = comm_text[0];
                     String text = (comm_text.length > 1)? comm_text[1] : null;
-                    message = new Message(user, comm, text);
+              //      message = new Message(user, comm, text);
                 }
                 else {
-                    message = new Message(user, "/send", line, "general");
+             //       message = new Message(user, "/send", line, "general");
                 }
                 //infoSend.sendMessage(message);
-                outputStream.writeObject(message);
+            //    outputStream.writeObject(message);
                 outputStream.flush();
 
                 //System.out.println("Клиенту" + count + ": " + ((Message)inputStream.readObject()).getData());
@@ -98,7 +98,7 @@ public class ClientTest extends Thread {
                //System.out.println();
             }
             //infoSend.sendMessage(new Message(user, "/exit", null));
-            outputStream.writeObject(new Message(user, "/exit", null));
+            //outputStream.writeObject(new Message(user, "/exit", null));
             socket.close();
             //infoSend.close();
 

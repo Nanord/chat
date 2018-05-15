@@ -1,6 +1,7 @@
 package client;
 
-import server.InfoSend;
+import commonData.MessageSend;
+import commonData.UserSend;
 import server.db.model.Message;
 import server.db.model.User;
 
@@ -25,16 +26,18 @@ public class WorkClient{
         String login = keyboard.readLine();
         System.out.println("Введите ваш пароль:");
         String password = keyboard.readLine();
-        User user = new User(login, password);
-        out.writeObject(new Message(user, "/serverHello", null));
+        UserSend user = new UserSend(login, password, 0);
+        out.writeObject(new MessageSend(user, "/serverHello", null, null));
 
         executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new ReadMessage(in, user));
+       // executorService.submit(new ReadMessage(in, user));
        /* Thread thread = new Thread(new ReadMessage(in, user));
         thread.start();*/
 
-        SendMessage sendMessage = new SendMessage(out, user);
-        sendMessage.run();
+      //  SendMessage sendMessage = new SendMessage(out, user);
+        //sendMessage.run();
+
+
         /*String data = null;
         String nameGroup = "general";
         while (true) {

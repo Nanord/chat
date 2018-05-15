@@ -8,6 +8,8 @@ import server.db.model.Message;
 import server.db.model.User;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 public class GroupService extends TemplateService<Group> implements GroupDao {
     @Override
@@ -25,16 +27,18 @@ public class GroupService extends TemplateService<Group> implements GroupDao {
 
             Query query1 = session.createQuery(hql);
             query1.setParameter("name", name);
-            List<Group> groups = query1.getResultList();
+            List groups = query1.getResultList();
             if(groups.size() != 1) {
                 return null;
             }
             else {
-                group = groups.get(0);
+                group = (Group)groups.get(0);
             }
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if(session != null && session.isOpen()) {
@@ -45,7 +49,7 @@ public class GroupService extends TemplateService<Group> implements GroupDao {
     }
 
     @Override
-    public List<Group> getAll() {
+    public Stream<Group> getAll() {
         session = null;
         List<Group> groups = null;
         try {
@@ -54,18 +58,23 @@ public class GroupService extends TemplateService<Group> implements GroupDao {
 
             String hql = "from Group";
 
-            Query<Group> query =  session.createQuery(hql);
+            Query<Group> query =  session.createQuery(hql, Group.class);
             groups = query.getResultList();
 
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if(session != null && session.isOpen()) {
                 session.close();
             }
-            return groups;
+            if (groups != null) {
+                return groups.stream();
+            }
+            return null;
         }
     }
 

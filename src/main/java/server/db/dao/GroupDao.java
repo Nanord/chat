@@ -6,8 +6,9 @@ import server.db.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Stream;
 
-public interface GroupDao {
+public interface GroupDao extends TemplateDao<Group>{
     Group get(String name);
-    List<Group> getAll();
+    Stream<Group> getAll();
 }

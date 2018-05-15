@@ -1,7 +1,9 @@
 package server.command.commandsList;
 
+import commonData.MessageSend;
+import server.DataServer;
 import server.db.model.Group;
-import server.InfoSend;
+import commonData.InfoSend;
 import server.db.model.Message;
 import server.Server;
 
@@ -9,23 +11,16 @@ import java.io.IOException;
 
 public class JoinGroup implements Command{
     @Override
-    public void make(Message msg, InfoSend infoSend) throws IOException {
-        Server.getGroup(msg.getNameGroup()).removeUser(msg.getUser(), infoSend);
-
-        Group group = Server.getGroup(msg.getData());
-        if(group != null) {
-          group.sendMssage(
-                  new Message(
-                          null,
-                          msg.getCommandText(),
-                          "ResponseServer: Поприветствуйте: " + msg.getUser().getName(),
-                          group.getName()));
-        } else {
+    public void make(MessageSend msg, InfoSend infoSend) throws IOException {
+        DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);
+        boolean flag = DataServer.addUserInGroup(msg.getNameGroup(), msg.getUser(), infoSend);
+        if(!flag) {
             infoSend.sendMessage(
-                    new Message(
+                    new MessageSend(
                             null,
                             "/error",
-                            "Группы с таким именем не существует"));
+                            "Группы с таким именем не существует",
+                            null));
         }
     }
 }

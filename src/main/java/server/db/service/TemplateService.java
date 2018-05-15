@@ -1,6 +1,7 @@
 package server.db.service;
 
 
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import server.db.HibernateUtil;
 import server.db.dao.TemplateDao;
@@ -21,9 +22,12 @@ public abstract class TemplateService<T> implements TemplateDao<T> {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.save(entity);
+            session.lock(entity, LockMode.PESSIMISTIC_WRITE);
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if(session != null && session.isOpen()) {
@@ -38,9 +42,12 @@ public abstract class TemplateService<T> implements TemplateDao<T> {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.update(entity);
+            session.lock(entity, LockMode.PESSIMISTIC_WRITE);
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if(session != null && session.isOpen()) {
@@ -55,9 +62,12 @@ public abstract class TemplateService<T> implements TemplateDao<T> {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.delete(entity);
+            session.lock(entity, LockMode.PESSIMISTIC_WRITE);
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if (session != null && session.isOpen()) {

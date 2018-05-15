@@ -1,19 +1,23 @@
 package server.command.commandsList;
 
+import commonData.MessageSend;
+import server.DataServer;
 import server.db.model.Group;
 import server.db.model.Message;
-import server.InfoSend;
+import commonData.InfoSend;
 import server.Server;
 
 import java.io.IOException;
 
 public class CreateGroup implements Command{
-
     @Override
-    public void make(Message msg, InfoSend infoSend) throws IOException {
-        Group group = new Group(msg.getData());
-        group.addUser(msg.getUser(), infoSend);
-        Server.addGroup(group);
-        infoSend.sendMessage(new Message(null, msg.getCommandText(), "ResponseServer: group '" + msg.getData() + "' is created"));
+    public void make(MessageSend msg, InfoSend infoSend) throws IOException {
+        if(!DataServer.addGroup(msg.getData(), msg.getUser(), infoSend)) {
+            infoSend.sendMessage(new MessageSend(
+                    null,
+                    msg.getCommandText(),
+                    "ResponseServer: Группа с таким именем уже существует",
+                    msg.getNameGroup()));
+        }
     }
 }

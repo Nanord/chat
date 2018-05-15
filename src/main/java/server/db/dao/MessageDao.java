@@ -1,5 +1,7 @@
 package server.db.dao;
 
-public interface MessageDao {
+import server.db.model.Message;
+
+public interface MessageDao extends TemplateDao<Message> {
 
 }

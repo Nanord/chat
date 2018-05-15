@@ -1,5 +1,9 @@
 package server.db.model;
 
+import commonData.MessageSend;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
+import org.hibernate.annotations.BatchSize;
 import server.db.model.User;
 
 import javax.persistence.*;
@@ -8,14 +12,16 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "User")
+@Table(name = "Message")
+@BatchSize(size = 200)
 public class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     private int id;
 
-    @Column(name = "user", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "commandText")
@@ -24,23 +30,19 @@ public class Message implements Serializable {
     @Column(name = "data")
     private String data;
 
-    @Column(name = "nameGroup")
-    private String nameGroup;
+    @ManyToOne()
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @Column(name = "time")
     private String time;
 
-    public Message(User user,String commandText, String data, String nameGroup) {
+    public Message(MessageSend messageSend, User user, Group group) {
         this.user = user;
-        this.commandText = commandText;
-        this.data = data;
-        this.nameGroup = nameGroup;
-
-        time = new Date().toString();
-    }
-
-    public Message(User user, String commandText, String data) {
-        this(user, commandText, data, null);
+        this.commandText = messageSend.getCommandText();
+        this.data = messageSend.getData();
+        this.group = group;
+        this.time = messageSend.getTime();
     }
 
     public User getUser() {
@@ -59,14 +61,13 @@ public class Message implements Serializable {
         this.data = data;
     }
 
-    public String getNameGroup() {
-        return nameGroup;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setNameGroup(String nameGroup) {
-        this.nameGroup = nameGroup;
+    public void setGroup(Group group) {
+        this.group = group;
     }
-
 
     public String getCommandText() {
         return commandText;
@@ -75,7 +76,6 @@ public class Message implements Serializable {
     public void setCommandText(String commandText) {
         this.commandText = commandText;
     }
-
     public String getTime() {
         return time;
     }

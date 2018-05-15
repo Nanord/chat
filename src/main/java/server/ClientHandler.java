@@ -1,5 +1,6 @@
 package server;
 
+import commonData.InfoSend;
 import server.command.CommandHandler;
 
 import java.io.*;
@@ -19,13 +20,11 @@ public class ClientHandler implements Runnable{
     public void run() {
         try {
             while (!infoSend.isClosed()) {
-
                 CommandHandler.makeCommand( infoSend.readMessage(), infoSend );
             }
             System.out.println(count + " Вышел");
             if(!infoSend.isClosed())
                 infoSend.close();
-
         } catch (SocketException ex) {
             System.out.println(count + " Вышел(SocketExeprion)");
            // ex.printStackTrace();
@@ -41,8 +40,8 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    /*public Group getGroup(String name) {
-        for (Group group:
+    /*public GroupSend getGroup(String name) {
+        for (GroupSend group:
                 Server.getGroupList()) {
             if(group.getNameGroup().equalsIgnoreCase(name)) {
                 return group;

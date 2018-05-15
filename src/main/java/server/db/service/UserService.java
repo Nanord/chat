@@ -1,13 +1,16 @@
 package server.db.service;
 
+import commonData.UserSend;
 import org.hibernate.query.Query;
 import server.db.HibernateUtil;
 import server.db.dao.TemplateDao;
 import server.db.dao.UserDao;
+import server.db.model.Group;
 import server.db.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class UserService extends  TemplateService<User> implements UserDao {
 
@@ -25,16 +28,18 @@ public class UserService extends  TemplateService<User> implements UserDao {
             Query query1 = session.createQuery(hql);
             query1.setParameter("name", user.getName());
             query1.setParameter("password", user.getPassword());
-            List<User> users = query1.getResultList();
+            List users = query1.getResultList();
             if(users.size() != 1) {
                 return null;
             }
             else {
-                user = users.get(0);
+                user = (User)users.get(0);
             }
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if(session != null && session.isOpen()) {
@@ -44,7 +49,7 @@ public class UserService extends  TemplateService<User> implements UserDao {
         return user;
     }
 
-    public List<User> getAll() {
+    public Stream<User> getAll() {
         session = null;
         List<User> users = null;
         try {
@@ -53,19 +58,31 @@ public class UserService extends  TemplateService<User> implements UserDao {
 
             String hql = "from User";
 
-            Query<User> query =  session.createQuery(hql);
+            Query<User> query =  session.createQuery(hql, User.class);
             users = query.getResultList();
 
             session.getTransaction().commit();
         } catch (Exception e) {
-            session.getTransaction().rollback();
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
             e.printStackTrace();
         } finally {
             if(session != null && session.isOpen()) {
                 session.close();
             }
-            return users;
+            if(users != null)
+                return users.stream();
+            return null;
         }
     }
 
+    @Override
+    public boolean eqUser(UserSend userSend) {
+        return false;
+    }
+
+    @Override
+    public void exitGroup(Group group) {
+    }
 }

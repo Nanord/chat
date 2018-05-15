@@ -1,7 +1,8 @@
 package server.command;
 
+import commonData.MessageSend;
 import server.db.model.Message;
-import server.InfoSend;
+import commonData.InfoSend;
 import server.command.commandsList.*;
 
 import java.io.IOException;
@@ -27,12 +28,16 @@ public class CommandHandler {
 
     private static Map<String, Command> commandList = Collections.synchronizedMap(new HashMap<String, Command>());
 
-    public static void makeCommand(Message msg, InfoSend infoSend) throws IOException {
+    public static void makeCommand(MessageSend msg, InfoSend infoSend) throws IOException {
         Command command = commandList.get(msg.getCommandText());
         if(command != null) {
             command.make(msg, infoSend);
         } else {
-            infoSend.sendMessage(new Message(null, "/error", "Неизвестная комманда"));
+            infoSend.sendMessage(new MessageSend(
+                    null,
+                    "/error",
+                    "Неизвестная комманда",
+                    msg.getNameGroup()));
         }
     }
 

@@ -1,5 +1,7 @@
 package client;
 
+import commonData.MessageSend;
+import commonData.UserSend;
 import server.db.model.Message;
 import server.db.model.User;
 
@@ -46,9 +48,9 @@ public class Client {
             String login = keyboard.readLine();
             System.out.println("Введите ваш пароль:");
             String password = keyboard.readLine();
-            User user = new User(login, password);
+            UserSend user = new UserSend(login, password, 0);
 
-            outputStream.writeObject(new Message(user, "/serverHello", null));
+            outputStream.writeObject(new MessageSend(user, "/serverHello", null, null));
             // infoSend.sendMessage(new Message(user, "/serverHello", null));
             out.println(((Message)inputStream.readObject()).getData());
             //out.println(infoSend.readMessage().getData());
@@ -58,15 +60,15 @@ public class Client {
                 System.out.println("Ваше сообщение: ");
                 line = keyboard.readLine();
 
-                Message message;
+                MessageSend message;
                 if(line.substring(0,1).equalsIgnoreCase("/")) {
                     String[] comm_text = line.split(" ");
                     String comm = comm_text[0];
                     String text = (comm_text.length > 1)? comm_text[1] : null;
-                    message = new Message(user, comm, text);
+                    message = new MessageSend(user, comm, text, null);
                 }
                 else {
-                    message = new Message(user, "/send", line, "general");
+                    message = new MessageSend(user, "/send", line, "general");
                 }
                 outputStream.writeObject(message);
                 outputStream.flush();

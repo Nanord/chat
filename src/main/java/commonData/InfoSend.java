@@ -1,4 +1,4 @@
-package server;
+package commonData;
 
 import server.db.model.Message;
 
@@ -18,15 +18,15 @@ public class InfoSend {
         inputStream = new ObjectInputStream(this.socket.getInputStream());
     }
 
-    public Message readMessage() throws IOException, ClassNotFoundException {
-        return (Message)inputStream.readObject();
+    public MessageSend readMessage() throws IOException, ClassNotFoundException {
+        return (MessageSend) inputStream.readObject();
     }
 
     public void setInputStream(ObjectInputStream inputStream) {
         this.inputStream = inputStream;
     }
 
-    public void sendMessage(Message msg) throws IOException{
+    public void sendMessage(MessageSend msg) throws IOException{
         outputStream.writeObject(msg);
         outputStream.flush();
     }

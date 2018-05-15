@@ -1,10 +1,11 @@
 package server.command.commandsList;
 
+import commonData.MessageSend;
 import server.db.model.Message;
-import server.InfoSend;
+import commonData.InfoSend;
 
 import java.io.IOException;
 
 public interface Command {
-    void make(Message msg, InfoSend infoSend) throws IOException;
+    void make(MessageSend msg, InfoSend infoSend) throws IOException;
 }

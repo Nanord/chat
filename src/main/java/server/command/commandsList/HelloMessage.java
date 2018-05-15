@@ -1,7 +1,10 @@
 package server.command.commandsList;
 
+import commonData.MessageSend;
+import commonData.UserSend;
+import server.DataServer;
 import server.db.model.Message;
-import server.InfoSend;
+import commonData.InfoSend;
 import server.Server;
 
 import java.io.IOException;
@@ -9,11 +12,10 @@ import java.io.IOException;
 public class HelloMessage implements Command{
 
     @Override
-    public void make(Message msg, InfoSend infoSend) throws IOException {
+    public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         //Добовляем юзера
-        Server.addUser(msg.getUser(), infoSend);
-
-
-        infoSend.sendMessage(new Message(null, msg.getCommandText(), "ResponseServer: Добро пожаловать"));
+        UserSend newUser = DataServer.addNewUser(msg.getUser(), infoSend);
+        //отправляем данные Юзеру о его id и группе
+        infoSend.sendMessage(new MessageSend(newUser, msg.getCommandText(), "ResponseServer: Добро пожаловать", null));
     }
 }
