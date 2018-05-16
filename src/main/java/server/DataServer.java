@@ -34,6 +34,12 @@ public class DataServer {
                     Function.identity()
             ));
         }
+        //Добавляем main группу(Stream не будет = null:( )
+        if(groupMap.size() == 0){
+            Group group = new Group("general");
+            Factory.getGroupService().add(group);
+            groupMap.put(group.getName(), group);
+        }
     }
 
 

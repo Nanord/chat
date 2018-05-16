@@ -27,7 +27,6 @@ public class ClientHandler implements Runnable{
                 infoSend.close();
         } catch (SocketException ex) {
             System.out.println(count + " Вышел(SocketExeprion)");
-            ex.printStackTrace();
         } catch (EOFException ex) {
             System.err.println("Ошибка чтения сообщения из потока");
             ex.printStackTrace();
