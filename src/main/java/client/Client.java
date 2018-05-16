@@ -33,7 +33,7 @@ public class Client {
 
     public void run() throws IOException, ClassNotFoundException{
         try {
-            getIpAddressServer(true);
+            getIpAddressServer(false);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);
@@ -53,10 +53,10 @@ public class Client {
             outputStream.writeObject(new MessageSend(user, "/serverHello", null, null));
             // infoSend.sendMessage(new Message(user, "/serverHello", null));
             MessageSend messageSend = ((MessageSend)inputStream.readObject());
+            out.println(messageSend.getData());
             user = messageSend.getUser();
             String groupName = messageSend.getNameGroup();
 
-            out.println(messageSend.getData());
             //out.println(infoSend.readMessage().getData());
 
             String line = null;
@@ -74,14 +74,16 @@ public class Client {
                 else {
                     message = new MessageSend(user, "/send", line, groupName);
                 }
-                outputStream.writeObject(message);
-                outputStream.flush();
+                if(message.getData() != null) {
+                    outputStream.writeObject(message);
+                    outputStream.flush();
+                }
+                else
+                    continue;
                 //infoSend.sendMessage(message);
 
-                MessageSend msg = ((MessageSend)inputStream.readObject());
-                System.out.println(
-                        ((msg.getUser() != null) ? (msg.getUser().getName() + ": ") : ("")) +
-                        msg.getData());
+
+                System.out.println(((MessageSend)inputStream.readObject()).getData());
                 //out.println(infoSend.readMessage().getData());
 
                 System.out.println();
@@ -102,7 +104,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws Exception {
-        Client client = new Client(7833);
+        Client client = new Client(7832);
         client.run();
     }
 }
