@@ -36,7 +36,7 @@ public class CommandHandler {
             infoSend.sendMessage(new MessageSend(
                     null,
                     "/error",
-                    "Неизвестная комманда",
+                    "ResponseServer: Неизвестная комманда",
                     msg.getNameGroup()));
         }
     }

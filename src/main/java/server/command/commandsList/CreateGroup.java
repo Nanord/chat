@@ -23,7 +23,7 @@ public class CreateGroup implements Command{
                     new MessageSend(
                             null,
                             msg.getCommandText(),
-                            "Всё ок",
+                            "ResponseServer: Всё ок",
                             msg.getData()));
         }
     }
