@@ -25,7 +25,7 @@ public class DataServer {
         Stream<User> userStream = Factory.getUserService().getAll();
         if(userStream != null) {
             userList = userStream
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(ConcurrentSkipListSet::new));
         }
         Stream<Group> groupStream = Factory.getGroupService().getAll();
         if(groupStream != null) {
