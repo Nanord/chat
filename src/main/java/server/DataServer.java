@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DataServer {
-    private static Set<User> userList = new ConcurrentSkipListSet<User>();
-    private static Map<String, Group> groupMap = new ConcurrentHashMap<String, Group>();
+    private static Set<User> userList;
+    private static Map<String, Group> groupMap;
 
     DataServer() {
         Stream<User> userStream = Factory.getUserService().getAll();
@@ -29,7 +29,7 @@ public class DataServer {
         }
         Stream<Group> groupStream = Factory.getGroupService().getAll();
         if(groupStream != null) {
-            groupMap = groupStream.collect(Collectors.toMap(
+            groupMap = groupStream.collect(Collectors.toConcurrentMap(
                     Group::getName,
                     Function.identity()
             ));
