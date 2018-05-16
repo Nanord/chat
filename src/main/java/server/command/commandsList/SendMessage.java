@@ -12,7 +12,8 @@ public class SendMessage implements Command{
 
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
-        if(!msg.getData().isEmpty())
-            DataServer.getGroup(msg.getNameGroup()).sendMssage(msg);
+        if(msg.getData() != null)
+            if(!msg.getData().isEmpty())
+                DataServer.getGroup(msg.getNameGroup()).sendMssage(msg);
     }
 }

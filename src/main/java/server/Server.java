@@ -68,7 +68,7 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7833;
+            short port = 7836;
             Server server = new Server(port);
             server.startServer();
 

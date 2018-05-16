@@ -19,7 +19,9 @@ public class InfoSend {
     }
 
     public MessageSend readMessage() throws IOException, ClassNotFoundException {
-        return (MessageSend) inputStream.readObject();
+        if(!socket.isClosed())
+            return (MessageSend) inputStream.readObject();
+        return null;
     }
 
     public void setInputStream(ObjectInputStream inputStream) {
@@ -27,8 +29,10 @@ public class InfoSend {
     }
 
     public void sendMessage(MessageSend msg) throws IOException{
-        outputStream.writeObject(msg);
-        outputStream.flush();
+        if(!socket.isClosed()) {
+            outputStream.writeObject(msg);
+            outputStream.flush();
+        }
     }
 
     public void setOutputStream(ObjectOutputStream outputStream) {

@@ -54,7 +54,6 @@ public class Group {
 
 
     public void sendMssage(MessageSend messageSend) throws IOException {
-        //Сохраняем сообщение в БД
         User user = null;
         for (User x : userList) {
             if (x.getName().equalsIgnoreCase(messageSend.getUser().getName())
@@ -62,16 +61,19 @@ public class Group {
                 user = x;
             }
         }
+        //если юзер принадлежит этой группе
+        if (user == null)
+            return;
+        //Сохраняем сообщение в БД
         Message message = new Message(messageSend, user, this);
         Factory.getMessageService().add(message);
-        messageList.add(message);
+        //messageList.add(message);
 
-        //Сообщяем всем о новом сообщении
-        if(userList.contains(message.getUser()))
-            for (InfoSend infoSend:
-                 onlineUsers) {
-                infoSend.sendMessage(messageSend);
-            }
+        //Сообщяем всем о новом сообщении только
+        for (InfoSend infoSend:
+             onlineUsers) {
+            infoSend.sendMessage(messageSend);
+        }
     }
 
 

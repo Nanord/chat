@@ -39,7 +39,7 @@ public class DataServer {
 
     public static UserSend addNewUser(UserSend userSend, InfoSend infoSend) {
         User newUser = new User(userSend);
-        User oldUser = Factory.getUserService().getByEnter(newUser);
+        User oldUser = ifUser(userSend);
         if(oldUser != null) {
             userSend.setId(oldUser.getId());
             groupMap.get("general").addUser(oldUser, infoSend);
@@ -98,11 +98,12 @@ public class DataServer {
             } else {
                 Group group = groupMap.get(nameGroup);
                 group.addUser(user, infoSend);
-                group.sendMssage(new MessageSend(
+                /*group.sendMssage(new MessageSend(
                         null,
                         null,
                         "ResponseServer: Поприветствуйте: " + user.getName(),
                         group.getName()));
+                        */
                 return true;
             }
         }

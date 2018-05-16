@@ -19,8 +19,17 @@ public class JoinGroup implements Command{
                     new MessageSend(
                             null,
                             "/error",
-                            "Группы с таким именем не существует",
+                            "ResponseServer: Группы с таким именем не существует",
                             msg.getNameGroup()));
+        } else {
+            infoSend.sendMessage(
+                    new MessageSend(
+                            null,
+                            msg.getCommandText(),
+                            "ResponseServer: OK",
+                            msg.getData()
+                    )
+            );
         }
     }
 }
