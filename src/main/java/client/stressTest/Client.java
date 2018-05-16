@@ -1,15 +1,12 @@
-package client;
+package client.stressTest;
 
 import commonData.MessageSend;
 import commonData.UserSend;
-import server.db.model.Message;
-import server.db.model.User;
 
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Random;
 
 
 import static java.lang.System.*;
@@ -80,15 +77,11 @@ public class Client {
                 }
                 else
                     continue;
-                //infoSend.sendMessage(message);
-
 
                 System.out.println(((MessageSend)inputStream.readObject()).getData());
-                //out.println(infoSend.readMessage().getData());
 
                 System.out.println();
             }
-            //infoSend.close();
         } catch (UnknownHostException ex) {
             err.println("Неудалось узнать адресс ");
         }
