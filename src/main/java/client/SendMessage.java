@@ -7,41 +7,55 @@ import server.db.model.User;
 import sun.misc.resources.Messages;
 
 import java.io.*;
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class SendMessage {
+    private Exchanger<String> exchanger;
+
+
     private ObjectOutputStream out;
     private UserSend user;
+    private String groupName;
 
-    public SendMessage(ObjectOutputStream out, UserSend user) {
+    SendMessage(ObjectOutputStream out, UserSend user, String groupName,  Exchanger<String> exchanger) {
         this.out = out;
         this.user = user;
+        this.exchanger = exchanger;
+        this.groupName = groupName;
     }
 
     public void run() {
         try {
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String data = null;
-
-            String nameGroup = "general";
             while (true) {
-
-                //System.out.println("Ваше сообщение: ");
                 data = keyboard.readLine();
-
                 MessageSend message = null;
+                //Считываем комманду
                 if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
                     String[] comm_text = data.split(" ");
                     String comm = comm_text[0];
                     String text = (comm_text.length > 1) ? comm_text[1] : null;
-                    message = new MessageSend(user, comm, text, nameGroup);
-                    if (comm.equalsIgnoreCase("/joinGroup") && comm.equalsIgnoreCase("/createGroup"))
-                        nameGroup = text;
-                } else {
-                    message = new MessageSend(user, "/send", data, nameGroup);
+                    message = new MessageSend(user, comm, text, groupName);
+                }
+                //Если команда не была введена, то отправляем сообщение в тек. группу
+                else {
+                    message = new MessageSend(user, "/send", data, groupName);
                 }
                 out.writeObject(message);
+
+                //Проверяем на наличие изменения группы
+                try {
+                    groupName = exchanger.exchange("", 500, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException e) {
+
+                }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
