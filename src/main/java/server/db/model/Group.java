@@ -18,7 +18,7 @@ public class Group {
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     private int id;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade =  CascadeType.REMOVE, orphanRemoval = true)
     private Set<Message> messageList = new HashSet<Message>();
 
     @Column(name = "name", nullable = false)
@@ -31,16 +31,19 @@ public class Group {
     private Set<User> userList = new HashSet<User>();
 
     @Transient
-    private Set<InfoSend> onlineUsers ;
+    private Set<InfoSend> onlineUsers = new HashSet<InfoSend>();
 
     //private Map<User, InfoSend> onlineUsers;
+
+    public Group() {
+
+    }
 
     public Group(String name, User user, InfoSend infoSend) {
         if(user != null)
             userList.add(user);
 
         this.name = name;
-        this.onlineUsers = new HashSet<InfoSend>();
         if(infoSend != null)
             onlineUsers.add(infoSend);
     }
@@ -52,13 +55,14 @@ public class Group {
 
     public void sendMssage(MessageSend messageSend) throws IOException {
         //Сохраняем сообщение в БД
-        final User[] user = {null};
-        userList.forEach( x -> {
-                    if(x.getId() == messageSend.getUser().getId()) {
-                        user[0] = x;
-                    }
-                });
-        Message message = new Message(messageSend, user[0], this);
+        User user = null;
+        for (User x : userList) {
+            if (x.getName().equalsIgnoreCase(messageSend.getUser().getName())
+                    && x.getPassword().equalsIgnoreCase(messageSend.getUser().getPassword())) {
+                user = x;
+            }
+        }
+        Message message = new Message(messageSend, user, this);
         Factory.getMessageService().add(message);
         messageList.add(message);
 

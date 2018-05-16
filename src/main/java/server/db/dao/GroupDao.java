@@ -11,4 +11,6 @@ import java.util.stream.Stream;
 public interface GroupDao extends TemplateDao<Group>{
     Group get(String name);
     Stream<Group> getAll();
+    void exitGroup(Group group, User user);
+    void enterGroup(Group group, User user);
 }

@@ -12,5 +12,4 @@ public interface UserDao extends  TemplateDao<User> {
     User getByEnter(User user);
     Stream<User> getAll();
     boolean eqUser(UserSend userSend);
-    void exitGroup(Group group);
 }

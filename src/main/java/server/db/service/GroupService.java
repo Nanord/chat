@@ -1,5 +1,6 @@
 package server.db.service;
 
+import org.hibernate.LockMode;
 import org.hibernate.query.Query;
 import server.db.HibernateUtil;
 import server.db.dao.GroupDao;
@@ -78,4 +79,33 @@ public class GroupService extends TemplateService<Group> implements GroupDao {
         }
     }
 
+    @Override
+    public void exitGroup(Group group, User user) {
+        session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+
+            //String hql = "from Group";
+
+
+            session.lock(User.class, LockMode.PESSIMISTIC_WRITE);
+            session.lock(Group.class, LockMode.PESSIMISTIC_WRITE);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if(session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void enterGroup(Group group, User user) {
+
+    }
 }

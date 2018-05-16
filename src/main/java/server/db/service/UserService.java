@@ -81,8 +81,4 @@ public class UserService extends  TemplateService<User> implements UserDao {
     public boolean eqUser(UserSend userSend) {
         return false;
     }
-
-    @Override
-    public void exitGroup(Group group) {
-    }
 }

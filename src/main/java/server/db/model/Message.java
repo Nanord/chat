@@ -37,6 +37,10 @@ public class Message implements Serializable {
     @Column(name = "time")
     private String time;
 
+    public Message() {
+
+    }
+
     public Message(MessageSend messageSend, User user, Group group) {
         this.user = user;
         this.commandText = messageSend.getCommandText();

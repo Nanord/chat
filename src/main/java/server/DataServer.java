@@ -25,7 +25,7 @@ public class DataServer {
         Stream<User> userStream = Factory.getUserService().getAll();
         if(userStream != null) {
             userList = userStream
-                    .collect(Collectors.toCollection(ConcurrentSkipListSet::new));
+                    .collect(Collectors.toSet());
         }
         Stream<Group> groupStream = Factory.getGroupService().getAll();
         if(groupStream != null) {
@@ -40,8 +40,9 @@ public class DataServer {
     public static UserSend addNewUser(UserSend userSend, InfoSend infoSend) {
         User newUser = new User(userSend);
         User oldUser = Factory.getUserService().getByEnter(newUser);
-        if(userList.contains(oldUser)) {
+        if(oldUser != null) {
             userSend.setId(oldUser.getId());
+            groupMap.get("general").addUser(oldUser, infoSend);
             return userSend;
         } else {
             Factory.getUserService().add(newUser);
@@ -83,11 +84,11 @@ public class DataServer {
     }
 
     public static void exitOnlineUser(String nameGroup, InfoSend infoSend) {
-        getGroup(nameGroup).removeOnlineUser(infoSend);
+        groupMap.get(nameGroup).removeOnlineUser(infoSend);
     }
 
     public static boolean addUserInGroup(String nameGroup, UserSend userSend, InfoSend infoSend) throws IOException {
-        if(groupMap.containsKey(nameGroup)) {
+        if(!groupMap.containsKey(nameGroup)) {
             return false;
         }
         else {
@@ -96,6 +97,7 @@ public class DataServer {
                 return false;
             } else {
                 Group group = groupMap.get(nameGroup);
+                group.addUser(user, infoSend);
                 group.sendMssage(new MessageSend(
                         null,
                         null,

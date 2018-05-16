@@ -15,13 +15,13 @@ public class DeleteGroup implements Command {
                     null,
                     msg.getCommandText(),
                     "ResponseServer: Готово, всё сломалось(",
-                    msg.getNameGroup()
+                    "general"
             ));
         }
         else {
             infoSend.sendMessage(new MessageSend(
                     null,
-                    msg.getCommandText(),
+                    "/error",
                     "ResponseServer: Не работает это(скорее всего имя группы не соответствует существующим)",
                     msg.getNameGroup()
             ));

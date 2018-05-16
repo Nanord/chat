@@ -13,14 +13,14 @@ public class JoinGroup implements Command{
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);
-        boolean flag = DataServer.addUserInGroup(msg.getNameGroup(), msg.getUser(), infoSend);
+        boolean flag = DataServer.addUserInGroup(msg.getData(), msg.getUser(), infoSend);
         if(!flag) {
             infoSend.sendMessage(
                     new MessageSend(
                             null,
                             "/error",
                             "Группы с таким именем не существует",
-                            null));
+                            msg.getNameGroup()));
         }
     }
 }

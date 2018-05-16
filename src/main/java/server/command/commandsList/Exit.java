@@ -11,7 +11,10 @@ public class Exit implements Command{
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);
-        infoSend.sendMessage(new MessageSend(null, msg.getCommandText(), "ResponseServer: Пока(", null));
+        infoSend.sendMessage(new MessageSend(
+                null, msg.getCommandText(),
+                "ResponseServer: Пока(",
+                null));
         infoSend.close();
     }
 }

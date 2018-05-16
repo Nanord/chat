@@ -26,12 +26,15 @@ public class User  implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade =  CascadeType.REMOVE, orphanRemoval = true)
     private Set<Message> messages = new HashSet<Message>();
 
     @ManyToMany(mappedBy = "userList", cascade =  CascadeType.ALL)
     private Set<Group> groupList = new HashSet<Group>();
 
+    public User() {
+
+    }
     public User(UserSend userSend) {
         this.name = userSend.getName();
         this.password = userSend.getPassword();

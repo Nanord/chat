@@ -33,7 +33,7 @@ public class Client {
 
     public void run() throws IOException, ClassNotFoundException{
         try {
-            getIpAddressServer(false);
+            getIpAddressServer(true);
             out.println("IP адрес server: " + ipAddressServer);
 
             socket = new Socket(ipAddressServer, serverPort);
@@ -69,7 +69,7 @@ public class Client {
                     String[] comm_text = line.split(" ");
                     String comm = comm_text[0];
                     String text = (comm_text.length > 1)? comm_text[1] : null;
-                    message = new MessageSend(user, comm, text, null);
+                    message = new MessageSend(user, comm, text, groupName);
                 }
                 else {
                     message = new MessageSend(user, "/send", line, groupName);
@@ -78,8 +78,10 @@ public class Client {
                 outputStream.flush();
                 //infoSend.sendMessage(message);
 
-
-                System.out.println(((Message)inputStream.readObject()).getData());
+                MessageSend msg = ((MessageSend)inputStream.readObject());
+                System.out.println(
+                        ((msg.getUser() != null) ? (msg.getUser().getName() + ": ") : ("")) +
+                        msg.getData());
                 //out.println(infoSend.readMessage().getData());
 
                 System.out.println();
@@ -100,7 +102,7 @@ public class Client {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws Exception {
-        Client client = new Client(7804);
+        Client client = new Client(7833);
         client.run();
     }
 }

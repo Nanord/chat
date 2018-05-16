@@ -22,12 +22,15 @@ public class WorkClient{
 
         BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
 
+        //Регистрация
         System.out.println("Введите ваш логин:");
         String login = keyboard.readLine();
         System.out.println("Введите ваш пароль:");
         String password = keyboard.readLine();
         UserSend user = new UserSend(login, password, 0);
         out.writeObject(new MessageSend(user, "/serverHello", null, null));
+
+
 
         executorService = Executors.newSingleThreadExecutor();
        // executorService.submit(new ReadMessage(in, user));

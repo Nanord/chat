@@ -15,9 +15,16 @@ public class CreateGroup implements Command{
         if(!DataServer.addGroup(msg.getData(), msg.getUser(), infoSend)) {
             infoSend.sendMessage(new MessageSend(
                     null,
-                    msg.getCommandText(),
+                    "/error",
                     "ResponseServer: Группа с таким именем уже существует",
                     msg.getNameGroup()));
+        } else {
+            infoSend.sendMessage(
+                    new MessageSend(
+                            null,
+                            msg.getCommandText(),
+                            "Всё ок",
+                            msg.getData()));
         }
     }
 }
