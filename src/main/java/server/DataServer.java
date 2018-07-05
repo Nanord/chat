@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 public class DataServer {
     private static Set<User> userList;
     private static Map<String, Group> groupMap;
@@ -25,7 +26,7 @@ public class DataServer {
         Stream<User> userStream = Factory.getUserService().getAll();
         if(userStream != null) {
             userList = userStream
-                    .collect(Collectors.toCollection(ConcurrentSkipListSet::new));
+                    .collect(Collectors.toSet());
         }
         Stream<Group> groupStream = Factory.getGroupService().getAll();
         if(groupStream != null) {

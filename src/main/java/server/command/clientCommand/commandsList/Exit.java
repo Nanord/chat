@@ -1,13 +1,12 @@
-package server.command.commandsList;
+package server.command.clientCommand.commandsList;
 
 import commonData.MessageSend;
 import server.DataServer;
-import server.db.model.Message;
 import commonData.InfoSend;
 
 import java.io.IOException;
 
-public class Exit implements Command{
+public class Exit implements ClientCommand {
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);

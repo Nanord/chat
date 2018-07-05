@@ -1,7 +1,7 @@
 package server;
 
 import commonData.InfoSend;
-import server.command.CommandHandler;
+import server.command.clientCommand.ClientCommandHandler;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,7 +20,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         try {
             while (!infoSend.isClosed()) {
-                CommandHandler.makeCommand( infoSend.readMessage(), infoSend );
+                ClientCommandHandler.makeCommand( infoSend.readMessage(), infoSend );
             }
             System.out.println(count + " Вышел");
             if(!infoSend.isClosed())

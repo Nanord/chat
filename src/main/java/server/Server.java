@@ -1,11 +1,8 @@
 package server;
 
-import commonData.InfoSend;
-import server.db.model.User;
-import server.db.model.Group;
-import server.command.CommandHandler;
-import server.db.service.GroupService;
-import server.db.service.UserService;
+import commonData.Data;
+import server.command.clientCommand.ClientCommandHandler;
+import server.command.serverCommand.ServerCommandHandler;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -17,26 +14,27 @@ import java.util.concurrent.*;
 public class Server {
     private ExecutorService executorService;
 
-    private int port;
+    private static int port;
 
-    private ServerSocket serverSocket;
+    private static ServerSocket serverSocket;
+
     public Server(int port) {
         //this.executorService = Executors.newCachedThreadPool();
         this.executorService = Executors.newFixedThreadPool(100);
-        this.port = port;
+        Server.port = port;
     }
 
-    private void startServer() throws Exception {
+    public void startServer() throws Exception {
         try {
             //Сделать SSLSocket(нужен сертификат:(
-            ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Ждем клиентов");
+            serverSocket = new ServerSocket(port);
             //Выгрузка данных из бд
             DataServer dataServer = new DataServer();
             //Инициализация комманд
-            CommandHandler comm = CommandHandler.getInstance();
+            ClientCommandHandler comm = ClientCommandHandler.getInstance();
 
             int count = 1; //счетчиек клиентов
+            System.out.println("Ждем клиентов");
             while (!serverSocket.isClosed()) {
 
                 Socket socket = serverSocket.accept();
@@ -50,9 +48,21 @@ public class Server {
             System.out.println("IOExeprion on server.Server");
             ex.printStackTrace();
         } finally {
-            if(serverSocket != null)
+            if(serverSocket != null && !serverSocket.isClosed())
                 serverSocket.close();
         }
+    }
+
+    private static boolean isStarted() {
+        return serverSocket != null && !serverSocket.isClosed();
+    }
+
+    public static boolean strop() throws IOException {
+        if(isStarted()) {
+            serverSocket.close();
+            return true;
+        } else
+            return false;
     }
 
     public int getPort() {
@@ -60,21 +70,16 @@ public class Server {
     }
 
     public void setPort(int port) {
-        this.port = port;
+        Server.port = port;
     }
 
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
         try {
-            System.out.println("Адрес сервера: " + Inet4Address.getLocalHost().getHostAddress());
-            short port = 7837;
-            Server server = new Server(port);
-            server.startServer();
-
-
-        } catch (UnknownHostException ex) {
-            System.out.println("Неудалось узнать IP сервера");
+            Data.reload();
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(ServerCommandHandler.getInstance());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

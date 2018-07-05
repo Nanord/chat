@@ -5,9 +5,12 @@ import commonData.UserSend;
 import server.db.model.Message;
 import server.db.model.User;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class WorkClient{
@@ -58,6 +61,7 @@ public class WorkClient{
 
     public static void main(String[] args) throws Exception{
         WorkClient workClient = new WorkClient();
-        workClient.run(7837, "10.182.1.123");
+        commonData.Data.reload(true);
+        workClient.run(commonData.Data.getPORT(), commonData.Data.getHOST());
     }
 }

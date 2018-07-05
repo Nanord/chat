@@ -1,14 +1,11 @@
-package server.command.commandsList;
+package server.command.clientCommand.commandsList;
 
 import commonData.InfoSend;
 import commonData.MessageSend;
-import server.DataServer;
-import server.db.model.Message;
-import server.Server;
 
 import java.io.IOException;
 
-public class LeaveGroup implements Command{
+public class LeaveGroup implements ClientCommand {
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
 
