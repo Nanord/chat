@@ -1,18 +1,22 @@
 package server.command.serverCommand.commandsList;
 
-import commonData.Data;
+import commonData.DATA;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class HelpServer implements ServerCommand {
     @Override
-    public void make(String txt) {
-        System.out.println("Список комманд: \n");
-        Stream<Map.Entry<String, String>> stream = Data.getCommandServer();
+    public String make(String txt) {
+        StringBuilder str = new StringBuilder();
+
+        str.append("Список комманд: \n");
+        Stream<Map.Entry<String, String>> stream = DATA.getCommandServer();
         stream.forEach((x) -> {
-            System.out.println("Command: " + x.getKey() + " Class: " + x.getValue() + ".java");
+            str.append("Command: " + x.getKey() + " Class: " + x.getValue() + ".java" + "\n");
         });
+
+        return str.toString();
     }
 
 }

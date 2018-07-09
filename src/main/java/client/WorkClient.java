@@ -40,9 +40,17 @@ public class WorkClient{
 
                     //Получение id и название стартовой группы
                     MessageSend conf = (MessageSend) in.readObject();
-                    user = conf.getUser();
-                    String groupName = conf.getNameGroup();
-                    System.err.println(conf.getData());
+                    String groupName = null;
+                    if(conf.getUser() != null && conf.getNameGroup() != null) {
+                        user = conf.getUser();
+                        groupName = conf.getNameGroup();
+                        System.err.println(conf.getData());
+                    } else {
+                        System.out.println("Логин занят");
+                        close();
+                        break;
+                    }
+
 
                     //Обмен данными между потоками
                     Exchanger<String> ex = new Exchanger<String>();
@@ -61,9 +69,14 @@ public class WorkClient{
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            if(socket != null)
-                socket.close();
+            close();
         }
 
+    }
+
+    private void close() throws IOException {
+        if(socket != null) {
+            socket.close();
+        }
     }
 }

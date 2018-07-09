@@ -1,14 +1,10 @@
 package server;
 
-import commonData.Data;
 import server.command.clientCommand.ClientCommandHandler;
-import server.command.serverCommand.ServerCommandHandler;
 
 import java.io.*;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.*;
 
 public class Server{
@@ -29,8 +25,6 @@ public class Server{
         try {
             //Сделать SSLSocket(нужен сертификат:(
             serverSocket = new ServerSocket(port);
-            //Выгрузка данных из бд
-            DataServer dataServer = new DataServer();
             //Инициализация комманд
             ClientCommandHandler comm = ClientCommandHandler.getInstance();
 

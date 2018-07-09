@@ -16,6 +16,10 @@ public class UserSend  implements Serializable {
         this.password = password;
     }
 
+    public UserSend(String name, String password) {
+        this(name, password, 0);
+    }
+
     public String getName() {
         return name;
     }

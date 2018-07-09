@@ -1,15 +1,14 @@
 package server.command.serverCommand.commandsList;
 
-import commonData.Data;
+import commonData.DATA;
 import server.command.clientCommand.ClientCommandHandler;
-import server.command.pattern.CommandHandler;
 
 public class UpdateClientList implements ServerCommand{
 
     @Override
-    public void make(String txt) {
-        Data.reload(false);
+    public String make(String txt) {
+        DATA.reload(false);
         ClientCommandHandler.addComands();
-        System.out.println("OK");
+        return "OK" + "\n";
     }
 }

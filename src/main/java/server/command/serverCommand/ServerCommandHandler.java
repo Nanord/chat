@@ -1,6 +1,5 @@
 package server.command.serverCommand;
 
-import commonData.Data;
 import server.command.pattern.Command;
 import server.command.pattern.CommandHandler;
 import server.command.serverCommand.commandsList.*;
@@ -37,29 +36,41 @@ public class ServerCommandHandler extends CommandHandler{
             do {
                 System.out.println("\nВведите комманду: ");
                 data = keyboard.readLine();
-                if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
-                    String[] comm_text = data.split(" ");
-                    String comm = comm_text[0];
-                    String text = (comm_text.length > 1) ? comm_text[1] : null;
-
-                    ServerCommand serverCommand = (ServerCommand) commandList.get(comm);
-                    if (serverCommand != null) {
-                        try {
-                            serverCommand.make(text);
-                        } catch (Exception ex) {
-                            System.err.println("Комманда \"" + comm + "\" не выполненна");
-                            ex.printStackTrace();
-                        }
-                    } else {
-                        System.err.println("Неизвестная комманда");
-                    }
-                } else
-                    System.err.println("Некорректный ввод");
+                System.out.println(make(data));
             } while (true);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+    public String makeCommand(String txt) {
+        try {
+            return make(txt);
+        } catch (Exception ex) {
+            return ex.toString();
+        }
+    }
+
+    private String make(String data) throws Exception{
+        if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
+            String[] comm_text = data.split(" ");
+            String comm = comm_text[0];
+            String text = (comm_text.length > 1) ? comm_text[1] : null;
+
+            ServerCommand serverCommand = (ServerCommand) commandList.get(comm);
+            if (serverCommand != null) {
+                try {
+                    return serverCommand.make(text);
+                } catch (Exception ex) {
+                    return "Комманда \"" + comm + "\" не выполненна" + "\n";
+                }
+            } else {
+                return "Неизвестная комманда" + "\n";
+            }
+        } else
+            return "Некорректный ввод" + "\n";
+    }
+
 
     public static void addComands() {
         commandList = Collections.synchronizedMap(new HashMap<String, Command>());

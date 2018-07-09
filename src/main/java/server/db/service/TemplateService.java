@@ -9,7 +9,7 @@ import server.db.dao.TemplateDao;
 import java.sql.SQLException;
 
 /**
- * Created by Nanord on 04.03.2018.
+ * Created by Admin on 04.03.2018.
  */
 
 public abstract class TemplateService<T> implements TemplateDao<T> {
