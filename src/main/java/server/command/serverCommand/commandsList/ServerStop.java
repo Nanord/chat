@@ -8,7 +8,7 @@ public class ServerStop implements ServerCommand {
     @Override
     public void make(String txt) {
         try {
-            boolean flag = Server.strop();
+            boolean flag = Server.stop();
             String str = flag ? "Готово" : "Сервер уже выключен";
             System.out.println(str);
 

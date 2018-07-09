@@ -8,6 +8,7 @@ import server.db.model.User;
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -17,14 +18,8 @@ public class WorkClient{
 
     private Socket socket;
 
-    private void run(int port, String ip) throws IOException {
+    public void run(int port, String ip) throws IOException {
         try {
-            socket = new Socket(ip, port);
-            System.out.println("Подключение к серверу успешно");
-
-            final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
 
             //Регистрация
@@ -33,35 +28,42 @@ public class WorkClient{
             System.out.println("Введите ваш пароль:");
             String password = keyboard.readLine();
             UserSend user = new UserSend(login, password, 0);
-            out.writeObject(new MessageSend(user, "/serverHello", null, null));
 
-            //Получение id и название стартовой группы
-            MessageSend conf = (MessageSend) in.readObject();
-            user = conf.getUser();
-            String groupName = conf.getNameGroup();
-            System.err.println(conf.getData());
+            while (true) {
+                try {
+                    socket = new Socket(ip, port);
+                    System.out.println("Подключение к серверу успешно");
 
-            //Обмен данными между потоками
-            Exchanger<String> ex = new Exchanger<String>();
+                    final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                    final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                    out.writeObject(new MessageSend(user, "/serverHello", null, null));
 
-            //Создание потока на чтение сообщений
-            Thread thread = new Thread(new ReadMessage(in, user, ex));
-            thread.start();
+                    //Получение id и название стартовой группы
+                    MessageSend conf = (MessageSend) in.readObject();
+                    user = conf.getUser();
+                    String groupName = conf.getNameGroup();
+                    System.err.println(conf.getData());
 
-            //Передача сообщений на сервер
-            SendMessage sendMessage = new SendMessage(out, user, groupName, ex);
-            sendMessage.run();
-        } catch (IOException | ClassNotFoundException e) {
+                    //Обмен данными между потоками
+                    Exchanger<String> ex = new Exchanger<String>();
+
+                    //Создание потока на чтение сообщений
+                    Thread thread = new Thread(new ReadMessage(in, user, ex));
+                    thread.start();
+
+                    //Передача сообщений на сервер
+                    SendMessage sendMessage = new SendMessage(out, user, groupName, ex);
+                    sendMessage.run();
+                } catch (SocketException ignored) {
+                    Thread.sleep(1000);
+                }
+            }
+        } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            socket.close();
+            if(socket != null)
+                socket.close();
         }
 
-    }
-
-    public static void main(String[] args) throws Exception{
-        WorkClient workClient = new WorkClient();
-        commonData.Data.reload(true);
-        workClient.run(commonData.Data.getPORT(), commonData.Data.getHOST());
     }
 }

@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.*;
 
-public class Server {
+public class Server{
     private ExecutorService executorService;
 
     private static int port;
@@ -23,6 +23,7 @@ public class Server {
         this.executorService = Executors.newFixedThreadPool(100);
         Server.port = port;
     }
+
 
     public void startServer() throws Exception {
         try {
@@ -45,7 +46,7 @@ public class Server {
                 count++;
             }
         } catch (IOException ex) {
-            System.out.println("IOExeprion on server.Server");
+            System.err.println("IOExeprion on server.Server");
             ex.printStackTrace();
         } finally {
             if(serverSocket != null && !serverSocket.isClosed())
@@ -53,13 +54,14 @@ public class Server {
         }
     }
 
-    private static boolean isStarted() {
+    public static boolean isStarted() {
         return serverSocket != null && !serverSocket.isClosed();
     }
 
-    public static boolean strop() throws IOException {
+    public static boolean stop() throws IOException {
         if(isStarted()) {
             serverSocket.close();
+            serverSocket = null;
             return true;
         } else
             return false;
@@ -71,17 +73,5 @@ public class Server {
 
     public void setPort(int port) {
         Server.port = port;
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
-    public static void main(String[] args) {
-        try {
-            Data.reload();
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(ServerCommandHandler.getInstance());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 }

@@ -1,30 +1,36 @@
 package server.command.pattern;
 
 import commonData.Data;
-import server.command.clientCommand.ClientCommandHandler;
-import server.command.clientCommand.commandsList.ClientCommand;
-
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public abstract class CommandHandler {
-    protected static Map<String, Command> commandList = Collections.synchronizedMap(new HashMap<String, Command>());
 
-    public static void addComands(boolean server) {
-        HashMap<String, String> comm = server? Data.getCommandServer() : Data.getCommandClient();
-        comm.entrySet().stream()
-                .forEach(x -> {
-                    findClass(x.getKey(), x.getValue(), server);
-                });
+    protected static void addComands(Map<String, Command> commandList, boolean server) {
+        Stream<Map.Entry<String, String>> comm = server ? Data.getCommandServer() : Data.getCommandClient();
+
+        comm.forEach((data) -> {
+                String strCommand = data.getKey();
+                Command command = findClass(data.getValue(), server);
+                commandList.put(strCommand, command);
+            });
+
+
+        String key;
+
     }
 
-    protected static void findClass(String comm, String className, boolean server) {
+    private static Command findClass(String className, boolean server) {
+        Command command = null;
         try {
-            Command serverCommand = (Command) Class.forName("server.command." + (server? "serverCommand" : "clientCommand") + ".commandsList." + className).newInstance();
-            commandList.put(comm, serverCommand);
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            command =(Command) Class.forName("server.command." + (server ? "serverCommand" : "clientCommand") + ".commandsList." + className).newInstance();
+        } catch (ClassNotFoundException e) {
+            System.out.println(className + ".java не найден");
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
+        return command;
     }
+
+
 }

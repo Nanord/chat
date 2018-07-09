@@ -4,15 +4,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public class Data {
+    static {
+        reload();
+    }
+
     private static final String PATH_TO_PROPERTIES = "src/main/resources/config.properties";
 
     private static String HOST = "localhost";
     private static int PORT = 7837;
 
-    private static HashMap<String, String> commandServer = new HashMap();
-    private static HashMap<String, String> commandClient = new HashMap();
+    private static Map<String, String> commandServer;
+    private static Map<String, String> commandClient;
 
     public static void reload() {
         reload(false);
@@ -25,12 +31,12 @@ public class Data {
         try {
 
             String filename = "config.properties";
-            //input = Data.class.getClassLoader().getResourceAsStream(filename);
+
             input = new FileInputStream(PATH_TO_PROPERTIES);
-            if (input == null) {
-                System.out.println("Sorry, unable to find " + filename);
-                return;
-            }
+
+            commandClient = new ConcurrentHashMap<String, String>();
+            commandServer = new ConcurrentHashMap<String, String>();
+
             if(out)
                 System.out.println("////////////////////////////////////////////");
 
@@ -47,22 +53,18 @@ public class Data {
                 if(key.equalsIgnoreCase("HOST")){
                     HOST = value;
                     continue;
-                }
-
+                } else
                 if(key.equalsIgnoreCase("PORT")){
                     PORT = Integer.parseInt(value);
                     continue;
-                }
-
-                if(key.split("\\.")[0].equalsIgnoreCase("commandServer")) {
-                    String[] val = value.split(",");
-                    commandServer.put(val[0], val[1]);
-                    continue;
-                }
-
-                if(key.split("\\.")[0].equalsIgnoreCase("commandClient")) {
-                    String[] val = value.split(",");
-                    commandClient.put(val[0], val[1]);
+                } else {
+                    String[] comm = key.split("\\.");
+                    String commandStr = "/" + comm[1];
+                    if(comm[0].equalsIgnoreCase("commandServer")) {
+                        commandServer.put(commandStr, value);
+                    } else if(comm[0].equalsIgnoreCase("commandClient")) {
+                        commandClient.put(commandStr, value);
+                    }
                 }
             }
             if(out)
@@ -81,6 +83,17 @@ public class Data {
         }
     }
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
+
 
 
     public static String getPathToProperties() {
@@ -95,12 +108,12 @@ public class Data {
         return PORT;
     }
 
-    public static HashMap<String, String> getCommandServer() {
-        return commandServer;
+    public static Stream<Map.Entry<String, String>> getCommandServer() {
+        return commandServer.entrySet().stream();
     }
 
-    public static HashMap<String, String> getCommandClient() {
-        return commandClient;
+    public static Stream<Map.Entry<String, String>> getCommandClient() {
+        return commandClient.entrySet().stream();
     }
 
     public static void main(String[] args) {

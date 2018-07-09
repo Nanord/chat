@@ -7,6 +7,6 @@ public class ReloadData implements ServerCommand {
     @Override
     public void make(String txt) {
         Data.reload(true);
-        System.out.println("OK");
+        System.out.println("Готово!");
     }
 }

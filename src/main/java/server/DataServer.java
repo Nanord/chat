@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,11 +23,13 @@ public class DataServer {
     private static Set<User> userList;
     private static Map<String, Group> groupMap;
 
-    DataServer() {
+
+
+    static  {
         Stream<User> userStream = Factory.getUserService().getAll();
         if(userStream != null) {
             userList = userStream
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(CopyOnWriteArraySet::new));
         }
         Stream<Group> groupStream = Factory.getGroupService().getAll();
         if(groupStream != null) {

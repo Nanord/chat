@@ -1,18 +1,21 @@
 package server.command.serverCommand;
 
 import commonData.Data;
+import server.command.pattern.Command;
 import server.command.pattern.CommandHandler;
 import server.command.serverCommand.commandsList.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
-public class ServerCommandHandler extends CommandHandler implements Runnable {
+public class ServerCommandHandler extends CommandHandler{
     private static volatile ServerCommandHandler instance;
 
     private ServerCommandHandler() {
-        addComands(true);
+        addComands();
     }
 
     public static ServerCommandHandler getInstance() {
@@ -25,15 +28,15 @@ public class ServerCommandHandler extends CommandHandler implements Runnable {
         return instance;
     }
 
-    @Override
-    public void run() {
+    private static Map<String, Command> commandList;
+
+    public void makeCommand() {
         try {
-            System.out.println("Введите комманду: ");
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String data;
-            while (true) {
+            do {
+                System.out.println("\nВведите комманду: ");
                 data = keyboard.readLine();
-                System.out.println("Введите комманду: ");
                 if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
                     String[] comm_text = data.split(" ");
                     String comm = comm_text[0];
@@ -44,19 +47,23 @@ public class ServerCommandHandler extends CommandHandler implements Runnable {
                         try {
                             serverCommand.make(text);
                         } catch (Exception ex) {
-                            System.out.println("Комманда \"" + comm + "\" не выполненна");
+                            System.err.println("Комманда \"" + comm + "\" не выполненна");
                             ex.printStackTrace();
                         }
                     } else {
-                        System.out.println("Неизвестная комманда");
+                        System.err.println("Неизвестная комманда");
                     }
-                }
-                else
-                    System.out.println("Некорректный ввод");
-            }
+                } else
+                    System.err.println("Некорректный ввод");
+            } while (true);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static void addComands() {
+        commandList = Collections.synchronizedMap(new HashMap<String, Command>());
+        addComands(commandList, true);
     }
 
 }

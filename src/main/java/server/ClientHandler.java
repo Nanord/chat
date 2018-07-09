@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable{
             System.err.println("Кливент " + count + "  неожиданно отключился");
             ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
-            System.out.println("Присланный объект не соответствует протоколу");
+            System.err.println("Присланный объект не соответствует протоколу");
             ex.printStackTrace();
         }
     }

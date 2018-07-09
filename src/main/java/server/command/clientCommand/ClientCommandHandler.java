@@ -4,6 +4,7 @@ import commonData.Data;
 import commonData.MessageSend;
 import commonData.InfoSend;
 import server.command.clientCommand.commandsList.*;
+import server.command.pattern.Command;
 import server.command.pattern.CommandHandler;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class ClientCommandHandler extends CommandHandler {
     private static volatile ClientCommandHandler instance;
 
     private ClientCommandHandler() {
-        addComands(false);
+        addComands();
     }
 
     public static ClientCommandHandler getInstance() {
@@ -26,6 +27,7 @@ public class ClientCommandHandler extends CommandHandler {
         return instance;
     }
 
+    private static Map<String, Command> commandList;
 
     public static void makeCommand(MessageSend msg, InfoSend infoSend) throws IOException {
         ClientCommand clientCommand = (ClientCommand) commandList.get(msg.getCommandText());
@@ -40,5 +42,8 @@ public class ClientCommandHandler extends CommandHandler {
         }
     }
 
-
+    public static void addComands() {
+        commandList = Collections.synchronizedMap(new HashMap<String, Command>());
+        addComands(commandList, false);
+    }
 }
