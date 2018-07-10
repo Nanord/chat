@@ -1,17 +1,15 @@
 package server;
 
-import commonData.Data;
 import server.command.clientCommand.ClientCommandHandler;
-import server.command.serverCommand.ServerCommandHandler;
 
 import java.io.*;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.SocketException;
 import java.util.concurrent.*;
 
 public class Server{
+
     private ExecutorService executorService;
 
     private static int port;
@@ -29,15 +27,12 @@ public class Server{
         try {
             //Сделать SSLSocket(нужен сертификат:(
             serverSocket = new ServerSocket(port);
-            //Выгрузка данных из бд
-            DataServer dataServer = new DataServer();
             //Инициализация комманд
             ClientCommandHandler comm = ClientCommandHandler.getInstance();
 
             int count = 1; //счетчиек клиентов
             System.out.println("Ждем клиентов");
-            while (!serverSocket.isClosed()) {
-
+            while (serverSocket != null && !serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Подключился клиент " + count + " : " + socket.getInetAddress().getHostAddress());
 
@@ -45,12 +40,16 @@ public class Server{
 
                 count++;
             }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
         } catch (IOException ex) {
             System.err.println("IOExeprion on server.Server");
             ex.printStackTrace();
         } finally {
-            if(serverSocket != null && !serverSocket.isClosed())
+            if(serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
+                serverSocket.getChannel().close();
+            }
         }
     }
 
@@ -58,9 +57,11 @@ public class Server{
         return serverSocket != null && !serverSocket.isClosed();
     }
 
-    public static boolean stop() throws IOException {
+    public static synchronized  boolean stop() throws IOException {
         if(isStarted()) {
             serverSocket.close();
+            serverSocket.getChannel().close();
+            Thread.currentThread().interrupt();
             serverSocket = null;
             return true;
         } else

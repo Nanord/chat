@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-public class Data {
+public class DATA {
     static {
         reload();
     }
@@ -24,7 +24,9 @@ public class Data {
         reload(false);
     }
 
-    public static void reload(boolean out){
+    public static String reload(boolean out){
+        StringBuilder str = new StringBuilder();
+
         Properties prop = new Properties();
         InputStream input = null;
 
@@ -38,7 +40,7 @@ public class Data {
             commandServer = new ConcurrentHashMap<String, String>();
 
             if(out)
-                System.out.println("////////////////////////////////////////////");
+                str.append("////////////////////////////////////////////" + "\n");
 
             prop.load(input);
 
@@ -48,7 +50,7 @@ public class Data {
                 String key = (String) e.nextElement();
                 String value = prop.getProperty(key);
                 if(out)
-                    System.out.println("Key : " + key + ", Value : " + value);
+                    str.append("Key : " + key + ", Value : " + value + "\n");
 
                 if(key.equalsIgnoreCase("HOST")){
                     HOST = value;
@@ -68,7 +70,7 @@ public class Data {
                 }
             }
             if(out)
-                System.out.println("////////////////////////////////////////////");
+                str.append("////////////////////////////////////////////" + "\n");
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -77,9 +79,10 @@ public class Data {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    str.append(e.toString());
                 }
             }
+            return str.toString();
         }
     }
 
@@ -117,6 +120,6 @@ public class Data {
     }
 
     public static void main(String[] args) {
-        Data.reload(true);
+        DATA.reload(true);
     }
 }

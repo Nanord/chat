@@ -7,6 +7,7 @@ import server.db.model.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -46,6 +47,7 @@ public class ReadMessage implements Runnable {
                         out.println(curUser.getName() + ": " + message.getData());
                 }
             }
+        } catch (SocketException ignored) {
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }

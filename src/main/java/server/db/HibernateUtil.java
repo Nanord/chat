@@ -1,5 +1,5 @@
 package server.db; /**
- * Created by Nanord on 01.03.2018.
+ * Created by Admin on 01.03.2018.
  */
 
 import org.hibernate.SessionFactory;

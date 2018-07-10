@@ -1,13 +1,13 @@
 package server.command.pattern;
 
-import commonData.Data;
+import commonData.DATA;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public abstract class CommandHandler {
 
     protected static void addComands(Map<String, Command> commandList, boolean server) {
-        Stream<Map.Entry<String, String>> comm = server ? Data.getCommandServer() : Data.getCommandClient();
+        Stream<Map.Entry<String, String>> comm = server ? DATA.getCommandServer() : DATA.getCommandClient();
 
         comm.forEach((data) -> {
                 String strCommand = data.getKey();

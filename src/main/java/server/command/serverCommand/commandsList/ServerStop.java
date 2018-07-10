@@ -6,14 +6,18 @@ import java.io.IOException;
 
 public class ServerStop implements ServerCommand {
     @Override
-    public void make(String txt) {
+    public String make(String txt) {
+        StringBuilder stringBuilder = new StringBuilder();
         try {
             boolean flag = Server.stop();
-            String str = flag ? "Готово" : "Сервер уже выключен";
-            System.out.println(str);
+            String str = flag ? "Готово" + "\n" : "Сервер уже выключен" + "\n";
+            stringBuilder.append(str);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            stringBuilder.append(e.toString());
+        }
+        finally {
+            return stringBuilder.toString();
         }
     }
 }

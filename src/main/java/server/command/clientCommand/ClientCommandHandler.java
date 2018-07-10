@@ -1,6 +1,5 @@
 package server.command.clientCommand;
 
-import commonData.Data;
 import commonData.MessageSend;
 import commonData.InfoSend;
 import server.command.clientCommand.commandsList.*;

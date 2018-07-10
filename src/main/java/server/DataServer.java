@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 
 
 public class DataServer {
-    private static Set<User> userList;
-    private static Map<String, Group> groupMap;
+    private static Set<User> userList = new CopyOnWriteArraySet<>();
+    private static Map<String, Group> groupMap = new ConcurrentHashMap<>();
 
 
 
-    static  {
+    static void  init() {
         Stream<User> userStream = Factory.getUserService().getAll();
         if(userStream != null) {
             userList = userStream
@@ -55,13 +55,17 @@ public class DataServer {
             groupMap.get("general").addUser(oldUser, infoSend);
             return userSend;
         } else {
-            Factory.getUserService().add(newUser);
-            //Возможна проблема!
-            userList.add(newUser);
-            groupMap.get("general").addUser(newUser, infoSend);
+            if(!ifUserName(userSend)) {
+                Factory.getUserService().add(newUser);
+                //Возможна проблема!
+                userList.add(newUser);
+                groupMap.get("general").addUser(newUser, infoSend);
 
-            userSend.setId(newUser.getId());
-            return userSend;
+                userSend.setId(newUser.getId());
+                return userSend;
+            } else
+                return null;
+
         }
     }
 
@@ -145,7 +149,7 @@ public class DataServer {
         return false;
     }
 
-    private static User ifUser(UserSend userSend) {
+    public static User ifUser(UserSend userSend) {
         for (User x : userList) {
             if (x.getName().equalsIgnoreCase(userSend.getName())
                     && x.getPassword().equalsIgnoreCase(userSend.getPassword())) {
@@ -154,6 +158,16 @@ public class DataServer {
         }
         return null;
     }
+
+    public static boolean ifUserName(UserSend userSend) {
+        for (User x : userList) {
+            if (x.getName().equalsIgnoreCase(userSend.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
 }

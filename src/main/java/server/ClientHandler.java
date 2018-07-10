@@ -29,24 +29,10 @@ public class ClientHandler implements Runnable{
             System.out.println(count + " Вышел(SocketExeprion)");
         } catch (EOFException ex) {
             System.err.println("Ошибка чтения сообщения из потока");
-            ex.printStackTrace();
         } catch (IOException ex) {
             System.err.println("Кливент " + count + "  неожиданно отключился");
-            ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
             System.err.println("Присланный объект не соответствует протоколу");
-            ex.printStackTrace();
         }
     }
-
-    /*public GroupSend getGroup(String name) {
-        for (GroupSend group:
-                Server.getGroupList()) {
-            if(group.getNameGroup().equalsIgnoreCase(name)) {
-                return group;
-            }
-        }
-        return null;
-    }*/
-
 }

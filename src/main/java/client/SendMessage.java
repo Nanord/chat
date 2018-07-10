@@ -7,6 +7,7 @@ import server.db.model.User;
 import sun.misc.resources.Messages;
 
 import java.io.*;
+import java.net.SocketException;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -37,8 +38,11 @@ public class SendMessage {
                 if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
                     String[] comm_text = data.split(" ");
                     String comm = comm_text[0];
-                    String text = (comm_text.length > 1) ? comm_text[1] : null;
-                    message = new MessageSend(user, comm, text, groupName);
+                    StringBuilder text = new StringBuilder();
+                    for (int i = 1; i < comm_text.length; i++) {
+                        text.append(comm_text[i] + " ");
+                    }
+                    message = new MessageSend(user, comm, text.toString(), groupName);
                 }
                 //Если команда не была введена, то отправляем сообщение в тек. группу
                 else {
@@ -49,13 +53,11 @@ public class SendMessage {
                 //Проверяем на наличие изменения группы
                 try {
                     groupName = exchanger.exchange("", 500, TimeUnit.MILLISECONDS);
-                } catch (TimeoutException e) {
-
+                } catch (TimeoutException ignored) {
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (SocketException ignored) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
