@@ -9,6 +9,9 @@ import server.subscription.EventType;
 import java.io.IOException;
 
 public class CreateGroup implements ClientCommand {
+    private String comm;
+    private String help;
+
     private EventManager eventManager = EventManager.getInstance();
 
     @Override
@@ -28,5 +31,25 @@ public class CreateGroup implements ClientCommand {
                             "ResponseServer: Всё ок",
                             msg.getData()));
         }
+    }
+
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 }

@@ -21,8 +21,8 @@ public class DATA {
 
     private static String mainGroup = "general";
 
-    private static Map<String, String> commandServer;
-    private static Map<String, String> commandClient;
+    private static Map<String, CommandString> commandServer;
+    private static Map<String, CommandString> commandClient;
 
     public static void reload() {
         reload(false);
@@ -40,11 +40,10 @@ public class DATA {
 
             input = new FileInputStream(PATH_TO_PROPERTIES);
 
-            commandClient = new ConcurrentHashMap<String, String>();
-            commandServer = new ConcurrentHashMap<String, String>();
+            commandClient = new ConcurrentHashMap<>();
+            commandServer = new ConcurrentHashMap<>();
 
-            if(out)
-                str.append("////////////////////////////////////////////" + "\n");
+            str.append("////////////////////////////////////////////" + "\n");
 
             prop.load(input);
 
@@ -53,8 +52,7 @@ public class DATA {
             while (e.hasMoreElements()) {
                 String key = (String) e.nextElement();
                 String value = prop.getProperty(key);
-                if(out)
-                    str.append("Key : " + key + ", Value : " + value + "\n");
+                str.append("Key : " + key + ", Value : " + value + "\n");
 
                 if(key.equalsIgnoreCase("HOST")){
                     HOST = value;
@@ -70,15 +68,24 @@ public class DATA {
                 else {
                     String[] comm = key.split("\\.");
                     String commandStr = "/" + comm[1];
+                    String[] ch = value.split("\\|");
+                    String className = ch[0];
+                    if(className.contains(" ")) {
+                        className = className.replace(" ", "");
+                    }
+                    String help = ch[1];
                     if(comm[0].equalsIgnoreCase("commandServer")) {
-                        commandServer.put(commandStr, value);
+                        commandServer.put(commandStr, new CommandString(className, help));
                     } else if(comm[0].equalsIgnoreCase("commandClient")) {
-                        commandClient.put(commandStr, value);
+                        commandClient.put(commandStr, new CommandString(className, help));
                     }
                 }
             }
-            if(out)
-                str.append("////////////////////////////////////////////" + "\n");
+            str.append("////////////////////////////////////////////" + "\n");
+
+            if(out) {
+                System.out.println(str.toString());
+            }
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -117,11 +124,11 @@ public class DATA {
         return PORT;
     }
 
-    public static Stream<Map.Entry<String, String>> getCommandServer() {
+    public static Stream<Map.Entry<String, CommandString>> getCommandServer() {
         return commandServer.entrySet().stream();
     }
 
-    public static Stream<Map.Entry<String, String>> getCommandClient() {
+    public static Stream<Map.Entry<String, CommandString>> getCommandClient() {
         return commandClient.entrySet().stream();
     }
 

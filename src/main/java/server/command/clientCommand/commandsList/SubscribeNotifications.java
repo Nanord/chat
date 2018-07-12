@@ -11,6 +11,9 @@ import server.subscription.eventListeners.UsersExitListener;
 import java.io.IOException;
 
 public class SubscribeNotifications implements ClientCommand{
+    private String comm;
+    private String help;
+
 
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
@@ -26,5 +29,24 @@ public class SubscribeNotifications implements ClientCommand{
                 "ResponseServer: OK",
                 msg.getNameGroup()
         ));
+    }
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 }

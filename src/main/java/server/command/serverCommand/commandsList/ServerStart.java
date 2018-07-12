@@ -7,20 +7,30 @@ import sun.awt.SunToolkit;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerStart implements ServerCommand, Runnable {
+    private String comm;
+    private String help;
+
+
+    private ExecutorService executorService;
+
+    public ServerStart() {
+        this.executorService = Executors.newSingleThreadExecutor();
+    }
     @Override
     public String make(String txt) {
         StringBuilder str = new StringBuilder();
         try {
-
             DATA.reload();
             if (Server.isStarted()) {
                 str.append("Server is started" + "\n");
             } else {
                 Thread thread = new Thread(this, "server");
                 //super.setDaemon(true);
-                thread.start();
+                executorService.submit(thread);
                 str.append("OK" + "\n");
             }
 
@@ -43,5 +53,25 @@ public class ServerStart implements ServerCommand, Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 }

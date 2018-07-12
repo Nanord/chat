@@ -13,6 +13,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class UseClientCommand implements ServerCommand{
+    private String comm;
+    private String help;
+
 
     private static InfoSend infoSend;
 
@@ -52,5 +55,25 @@ public class UseClientCommand implements ServerCommand{
            str.append(e.toString());
         }
         return str.toString();
+    }
+
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 }

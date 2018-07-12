@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SetAdmin implements ServerCommand {
+    private String comm;
+    private String help;
+
 
     private static Set<UserSend> userList = new CopyOnWriteArraySet<>();
 
@@ -43,4 +46,25 @@ public class SetAdmin implements ServerCommand {
         }
         return false;
     }
+
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
+    }
+
 }

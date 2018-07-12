@@ -7,6 +7,9 @@ import server.DataServer;
 import java.io.IOException;
 
 public class ListUser implements ClientCommand {
+    private String comm;
+    private String help;
+
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         StringBuilder str = new StringBuilder();
@@ -22,5 +25,24 @@ public class ListUser implements ClientCommand {
                 "ResponseServer: \n" + str.toString(),
                 msg.getNameGroup()
         ));
+    }
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 }

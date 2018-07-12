@@ -12,6 +12,8 @@ import server.subscription.eventListeners.UserEnteredListener;
 import java.io.IOException;
 
 public class HelloMessage implements ClientCommand {
+    private String comm;
+    private String help;
 
     private EventManager eventManager = EventManager.getInstance();
 
@@ -37,6 +39,25 @@ public class HelloMessage implements ClientCommand {
                     "ResponseServe: Логин занят",
                     null
             ));
+    }
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 
 }

@@ -7,6 +7,9 @@ import server.DataServer;
 import java.io.IOException;
 
 public class DeleteGroup implements ClientCommand {
+    private String comm;
+    private String help;
+
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         if(!msg.getData().isEmpty() && DataServer.deleteGroup(msg.getData(), msg.getUser())) {
@@ -25,5 +28,25 @@ public class DeleteGroup implements ClientCommand {
                     msg.getNameGroup()
             ));
         }
+    }
+
+    @Override
+    public String getComm() {
+        return comm;
+    }
+
+    @Override
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    @Override
+    public String getHelp() {
+        return help;
+    }
+
+    @Override
+    public void setHelp(String help) {
+        this.help = help;
     }
 }
