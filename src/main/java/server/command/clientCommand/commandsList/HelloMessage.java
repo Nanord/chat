@@ -5,12 +5,15 @@ import commonData.MessageSend;
 import commonData.UserSend;
 import server.DataServer;
 import commonData.InfoSend;
+import server.subscription.EventManager;
+import server.subscription.EventType;
+import server.subscription.eventListeners.UserEnteredListener;
 
 import java.io.IOException;
 
 public class HelloMessage implements ClientCommand {
 
-
+    private EventManager eventManager = EventManager.getInstance();
 
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
@@ -22,6 +25,7 @@ public class HelloMessage implements ClientCommand {
                     "ResponseServer: Добро пожаловать",
                     DATA.getMainGroup()
             ));
+            eventManager.notify(EventType.USERS_ENTERED, infoSend.getUserSend().getName());
 
 
 

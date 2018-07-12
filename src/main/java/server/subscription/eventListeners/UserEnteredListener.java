@@ -6,11 +6,11 @@ import server.subscription.EventType;
 
 import java.io.IOException;
 
-public class UsersExitListener implements EventListener {
+public class UserEnteredListener implements EventListener {
 
     private InfoSend infoSend;
 
-    public UsersExitListener(InfoSend infoSend) {
+    public UserEnteredListener(InfoSend infoSend) {
         this.infoSend = infoSend;
     }
 
@@ -22,19 +22,11 @@ public class UsersExitListener implements EventListener {
                 infoSend.sendMessage(new MessageSend(
                         null,
                         "/notify",
-                        "ResponseServer: " + nameUser + " вышел",
+                        "ResponseServer: " + nameUser + " - вошел",
                         null
                 ));
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public InfoSend getInfoSend() {
-        return infoSend;
-    }
-
-    public void setInfoSend(InfoSend infoSend) {
-        this.infoSend = infoSend;
     }
 }

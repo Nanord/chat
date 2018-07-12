@@ -7,22 +7,26 @@ import java.util.*;
 public class EventManager {
     private static EventManager instance;
 
-    public static EventManager getInstance(EventType... operations) {
+    public static EventManager getInstance() {
         if(instance == null) {
             synchronized (EventManager.class) {
                 if(instance == null)
-                    instance = new EventManager(operations);
+                    instance = new EventManager();
             }
         }
         return instance;
     }
 
 
-    private Map<EventType, List<EventListener>> listeners = Collections.synchronizedMap(new HashMap<>());
+    private static Map<EventType, List<EventListener>> listeners = Collections.synchronizedMap(new HashMap<>());
 
-    private EventManager(EventType... operations) {
-        for (EventType operation : operations) {
-            listeners.put(operation, new ArrayList<>());
+    private EventManager() {
+        putListeners();
+    }
+
+    public static synchronized void putListeners() {
+        for (EventType anEventType : EventType.values()) {
+            listeners.put(anEventType, new ArrayList<>());
         }
     }
 
@@ -37,10 +41,10 @@ public class EventManager {
         users.remove(listener);
     }
 
-    public synchronized void notify(EventType eventType, Object obj) {
+    public synchronized void notify(EventType eventType, Object... obj) {
         List<EventListener> users = listeners.get(eventType);
         for (EventListener listener : users) {
-            listener.update(eventType, obj);
+            listener.update(obj);
         }
     }
 

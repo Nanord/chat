@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 public class ClientHandler implements Runnable{
-    private static EventManager eventManager = EventManager.getInstance(EventType.USERS_EXIT);
+    private static EventManager eventManager = EventManager.getInstance();
 
     private InfoSend infoSend;
     private int count;
