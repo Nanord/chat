@@ -1,7 +1,7 @@
 package server.command.serverCommand;
 
-import server.command.pattern.Command;
-import server.command.pattern.CommandHandler;
+import server.command.template.Command;
+import server.command.template.CommandHandler;
 import server.command.serverCommand.commandsList.*;
 
 import java.io.BufferedReader;
@@ -55,12 +55,18 @@ public class ServerCommandHandler extends CommandHandler{
         if (!data.isEmpty() && data.substring(0, 1).equalsIgnoreCase("/")) {
             String[] comm_text = data.split(" ");
             String comm = comm_text[0];
-            String text = (comm_text.length > 1) ? comm_text[1] : null;
+            StringBuilder text = new StringBuilder();
+            for (int i = 1; i < comm_text.length; i++) {
+                if(i == comm_text.length - 1)
+                    text.append(comm_text[i]);
+                else
+                    text.append(comm_text[i] + " ");
+            }
 
             ServerCommand serverCommand = (ServerCommand) commandList.get(comm);
             if (serverCommand != null) {
                 try {
-                    return serverCommand.make(text);
+                    return serverCommand.make(text.toString());
                 } catch (Exception ex) {
                     return "Комманда \"" + comm + "\" не выполненна" + "\n";
                 }

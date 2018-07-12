@@ -25,6 +25,10 @@ public class MessageSend implements Serializable {
         time = new Date().toString();
     }
 
+    public MessageSend(String comm, String txt) {
+
+    }
+
 
     public UserSend getUser() {
         return user;

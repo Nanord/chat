@@ -1,5 +1,6 @@
 package server.command.clientCommand.commandsList;
 
+import commonData.DATA;
 import commonData.MessageSend;
 import commonData.UserSend;
 import server.DataServer;
@@ -9,16 +10,23 @@ import java.io.IOException;
 
 public class HelloMessage implements ClientCommand {
 
+
+
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         //Добовляем юзера
         UserSend newUser = DataServer.addNewUser(msg.getUser(), infoSend);
         //отправляем данные Юзеру о его id и стартовую группу
-        if(newUser != null)
+        if(newUser != null) {
             infoSend.sendMessage(new MessageSend(newUser, msg.getCommandText(),
                     "ResponseServer: Добро пожаловать",
-                    "general"));
-        else
+                    DATA.getMainGroup()
+            ));
+
+
+
+
+        } else
             infoSend.sendMessage(new MessageSend(
                     null,
                     msg.getCommandText(),
@@ -26,4 +34,5 @@ public class HelloMessage implements ClientCommand {
                     null
             ));
     }
+
 }

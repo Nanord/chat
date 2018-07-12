@@ -8,8 +8,8 @@
         <property name="hibernate.connection.url">
             jdbc:mysql://localhost/chat
         </property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">nanord</property>
+        <property name="hibernate.connection.password">151074</property>
         <property name="hibernate.connection.autocommit">false</property>
         <!-- c3p0 config http://www.hibernate.org/214.html -->
         <property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>

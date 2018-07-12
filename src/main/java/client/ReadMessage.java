@@ -5,6 +5,7 @@ import commonData.UserSend;
 import server.db.model.Message;
 import server.db.model.User;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.SocketException;
@@ -47,7 +48,7 @@ public class ReadMessage implements Runnable {
                         out.println(curUser.getName() + ": " + message.getData());
                 }
             }
-        } catch (SocketException ignored) {
+        } catch (SocketException | EOFException ignored) {
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }

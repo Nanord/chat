@@ -1,4 +1,4 @@
-package server.command.pattern;
+package server.command.template;
 
 import commonData.DATA;
 import java.util.Map;

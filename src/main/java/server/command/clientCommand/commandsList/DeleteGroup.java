@@ -9,7 +9,7 @@ import java.io.IOException;
 public class DeleteGroup implements ClientCommand {
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
-        if(DataServer.deleteGroup(msg.getData(), msg.getUser())) {
+        if(!msg.getData().isEmpty() && DataServer.deleteGroup(msg.getData(), msg.getUser())) {
             infoSend.sendMessage(new MessageSend(
                     null,
                     msg.getCommandText(),

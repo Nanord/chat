@@ -30,18 +30,19 @@ public class Server{
             //Инициализация комманд
             ClientCommandHandler comm = ClientCommandHandler.getInstance();
 
+
+
             int count = 1; //счетчиек клиентов
             System.out.println("Ждем клиентов");
             while (serverSocket != null && !serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Подключился клиент " + count + " : " + socket.getInetAddress().getHostAddress());
+                System.out.println("Подключился клиент " + count + " : " + socket.getRemoteSocketAddress().toString());
 
                 executorService.submit(new ClientHandler(count, socket));
 
                 count++;
             }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
+        } catch (SocketException ignored) {
         } catch (IOException ex) {
             System.err.println("IOExeprion on server.Server");
             ex.printStackTrace();
@@ -61,7 +62,7 @@ public class Server{
         if(isStarted()) {
             serverSocket.close();
             serverSocket.getChannel().close();
-            Thread.currentThread().interrupt();
+
             serverSocket = null;
             return true;
         } else

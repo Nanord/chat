@@ -4,11 +4,11 @@ import commonData.DATA;
 import server.Server;
 import sun.awt.SunToolkit;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class ServerStart extends Thread implements ServerCommand {
-
+public class ServerStart implements ServerCommand, Runnable {
     @Override
     public String make(String txt) {
         StringBuilder str = new StringBuilder();
@@ -18,9 +18,9 @@ public class ServerStart extends Thread implements ServerCommand {
             if (Server.isStarted()) {
                 str.append("Server is started" + "\n");
             } else {
-                super.setName("server");
+                Thread thread = new Thread(this, "server");
                 //super.setDaemon(true);
-                super.start();
+                thread.start();
                 str.append("OK" + "\n");
             }
 

@@ -23,7 +23,7 @@ public class SetAdmin implements ServerCommand {
             if(equalsAdmin(userSend)) {
                 str.append("OK" + "\n");
             }
-            else if(DataServer.ifUserName(userSend)) {
+            else if(DataServer.ifUserName(userSend) != null) {
                 userList.add(userSend);
                 str.append("OK" + "\n");
             }

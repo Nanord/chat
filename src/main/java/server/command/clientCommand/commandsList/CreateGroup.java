@@ -9,7 +9,7 @@ import java.io.IOException;
 public class CreateGroup implements ClientCommand {
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
-        if(!DataServer.addGroup(msg.getData(), msg.getUser(), infoSend)) {
+        if(msg.getData().isEmpty() || !DataServer.addGroup(msg.getData(), msg.getUser(), infoSend)) {
             infoSend.sendMessage(new MessageSend(
                     null,
                     "/error",

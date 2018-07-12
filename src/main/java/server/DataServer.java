@@ -1,18 +1,19 @@
 package server;
 
+import commonData.DATA;
 import commonData.InfoSend;
 import commonData.MessageSend;
 import commonData.UserSend;
 import server.db.Factory;
 import server.db.model.Group;
 import server.db.model.User;
-import server.db.service.UserService;
+import server.subscription.EventManager;
+import server.subscription.EventType;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -20,9 +21,9 @@ import java.util.stream.Stream;
 
 
 public class DataServer {
+
     private static Set<User> userList = new CopyOnWriteArraySet<>();
     private static Map<String, Group> groupMap = new ConcurrentHashMap<>();
-
 
 
     static void  init() {
@@ -40,14 +41,23 @@ public class DataServer {
         }
         //Добавляем main группу(Stream не будет = null:( )
         if(groupMap.size() == 0){
-            Group group = new Group("general");
+            Group group = new Group(DATA.getMainGroup());
             Factory.getGroupService().add(group);
             groupMap.put(group.getName(), group);
+        }
+        //Добавляем Admin
+        if(userList.size() == 0) {
+            User admin = new User("Admin", "123");
+            Factory.getUserService().add(admin);
+            userList.add(admin);
         }
     }
 
 
     public static UserSend addNewUser(UserSend userSend, InfoSend infoSend) {
+        if(userSend.getName() == null || userSend.getPassword() == null) {
+            return null;
+        }
         User newUser = new User(userSend);
         User oldUser = ifUser(userSend);
         if(oldUser != null) {
@@ -55,11 +65,11 @@ public class DataServer {
             groupMap.get("general").addUser(oldUser, infoSend);
             return userSend;
         } else {
-            if(!ifUserName(userSend)) {
+            if(ifUserName(userSend) == null) {
                 Factory.getUserService().add(newUser);
                 //Возможна проблема!
                 userList.add(newUser);
-                groupMap.get("general").addUser(newUser, infoSend);
+                groupMap.get(DATA.getMainGroup()).addUser(newUser, infoSend);
 
                 userSend.setId(newUser.getId());
                 return userSend;
@@ -112,18 +122,17 @@ public class DataServer {
             } else {
                 Group group = groupMap.get(nameGroup);
                 group.addUser(user, infoSend);
-                /*group.sendMssage(new MessageSend(
+                group.sendMssage(new MessageSend(
                         null,
                         null,
                         "ResponseServer: Поприветствуйте: " + user.getName(),
                         group.getName()));
-                        */
                 return true;
             }
         }
     }
 
-    public static void removeUser(String nameGroup, UserSend userSend, InfoSend infoSend) throws IOException{
+    public static void removeUserinGroup(String nameGroup, UserSend userSend, InfoSend infoSend) throws IOException{
         Group group = groupMap.get(nameGroup);
         User user = ifUser(userSend);
         group.sendMssage(new MessageSend(
@@ -135,12 +144,14 @@ public class DataServer {
     }
 
     public static boolean deleteGroup(String nameGroup, UserSend userSend) {
+        if(nameGroup.equals(DATA.getMainGroup()))
+            return false;
         User user = ifUser(userSend);
         Group group = groupMap.get(nameGroup);
         //Если такая группа существует
         if(group != null) {
             //Если юзер пренадлежит группе
-            if (group.getUserList().contains(user)) {
+            if (group.containUser(user) != null) {
                 groupMap.remove(nameGroup);
                 Factory.getGroupService().delete(group);
                 return true;
@@ -159,15 +170,50 @@ public class DataServer {
         return null;
     }
 
-    public static boolean ifUserName(UserSend userSend) {
+    public static User ifUserName(UserSend userSend) {
         for (User x : userList) {
             if (x.getName().equalsIgnoreCase(userSend.getName())) {
-                return true;
+                return x;
             }
         }
+        return null;
+    }
+
+    public static InfoSend ifOnlineUser(String name) {
+        InfoSend infoSend = null;
+        for (Group g:
+                DataServer.getGroupMap().values()) {
+            for (InfoSend is:
+                    g.getOnlineUsers()) {
+                if(is.getUserSend().getName().equalsIgnoreCase(name))
+                    infoSend = is;
+            }
+        }
+        return infoSend;
+    }
+
+    public static Set<User> getUserList() {
+        return userList;
+    }
+
+    public static boolean removeUser(String userName) {
+        InfoSend infoSend = ifOnlineUser(userName);
+        User user = ifUserName(new UserSend(userName, null));
+        if(user != null) {
+            Factory.getUserService().delete(user);
+            if(infoSend == null)
+                DataServer.getGroupMap().values().forEach( x -> x.removeUser(user));
+            else
+                DataServer.getGroupMap().values().forEach(x -> x.removeUser(user, infoSend));
+            return true;
+        }
         return false;
+
     }
 
 
 
+    public static Map<String, Group> getGroupMap() {
+        return groupMap;
+    }
 }

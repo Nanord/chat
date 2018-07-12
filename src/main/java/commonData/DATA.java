@@ -1,5 +1,7 @@
 package commonData;
 
+import server.db.model.User;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +18,8 @@ public class DATA {
 
     private static String HOST = "localhost";
     private static int PORT = 7837;
+
+    private static String mainGroup = "general";
 
     private static Map<String, String> commandServer;
     private static Map<String, String> commandClient;
@@ -59,7 +63,11 @@ public class DATA {
                 if(key.equalsIgnoreCase("PORT")){
                     PORT = Integer.parseInt(value);
                     continue;
-                } else {
+                } else
+                if(key.equalsIgnoreCase("mainGroup")){
+                    mainGroup = value;
+                }
+                else {
                     String[] comm = key.split("\\.");
                     String commandStr = "/" + comm[1];
                     if(comm[0].equalsIgnoreCase("commandServer")) {
@@ -97,8 +105,6 @@ public class DATA {
     public static final String ANSI_WHITE = "\u001B[37m";
 
 
-
-
     public static String getPathToProperties() {
         return PATH_TO_PROPERTIES;
     }
@@ -117,6 +123,10 @@ public class DATA {
 
     public static Stream<Map.Entry<String, String>> getCommandClient() {
         return commandClient.entrySet().stream();
+    }
+
+    public static String getMainGroup() {
+        return mainGroup;
     }
 
     public static void main(String[] args) {

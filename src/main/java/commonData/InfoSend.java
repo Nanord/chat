@@ -11,11 +11,16 @@ public class InfoSend {
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
-
+    private UserSend userSend;
     public InfoSend(Socket socket) throws IOException{
         this.socket = socket;
         outputStream = new ObjectOutputStream(this.socket.getOutputStream());
         inputStream = new ObjectInputStream(this.socket.getInputStream());
+    }
+
+    public InfoSend(Socket socket, UserSend userSend) throws IOException{
+        this(socket);
+        this.userSend = userSend;
     }
 
     public MessageSend readMessage() throws IOException, ClassNotFoundException {
@@ -55,5 +60,13 @@ public class InfoSend {
 
     public boolean isClosed() {
         return socket.isClosed();
+    }
+
+    public UserSend getUserSend() {
+        return userSend;
+    }
+
+    public void setUserSend(UserSend userSend) {
+        this.userSend = userSend;
     }
 }

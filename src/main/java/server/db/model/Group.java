@@ -33,8 +33,6 @@ public class Group {
     @Transient
     private Set<InfoSend> onlineUsers = new HashSet<InfoSend>();
 
-    //private Map<User, InfoSend> onlineUsers;
-
     public Group() {
 
     }
@@ -62,7 +60,8 @@ public class Group {
             }
         }
         //если юзер принадлежит этой группе
-        if (user == null)
+        if (user == null &&
+                (!messageSend.getUser().getName().equalsIgnoreCase("Admin") && !messageSend.getUser().getPassword().equalsIgnoreCase("123")) )
             return;
         //Сохраняем сообщение в БД
         Message message = new Message(messageSend, user, this);
@@ -87,6 +86,18 @@ public class Group {
         onlineUsers.remove(infoSend);
     }
 
+    public void removeUser(User user) {
+        userList.remove(containUser(user));
+    }
+
+    public User containUser(User user) {
+        for (User x:
+                userList) {
+            if(user.getId() == x.getId() && user.getName().equalsIgnoreCase(x.getName()) && user.getPassword().equalsIgnoreCase(x.getPassword()))
+                return x;
+        }
+        return null;
+    }
 
     public Set<User> getUserList() {
         return userList;
@@ -128,5 +139,7 @@ public class Group {
         this.userList = userList;
     }
 
-
+    public Set<InfoSend> getOnlineUsers() {
+        return onlineUsers;
+    }
 }

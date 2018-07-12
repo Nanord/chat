@@ -2,7 +2,7 @@ package server.command.clientCommand.commandsList;
 
 import commonData.MessageSend;
 import commonData.InfoSend;
-import server.command.pattern.Command;
+import server.command.template.Command;
 
 import java.io.IOException;
 

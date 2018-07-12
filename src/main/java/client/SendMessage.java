@@ -39,8 +39,11 @@ public class SendMessage {
                     String[] comm_text = data.split(" ");
                     String comm = comm_text[0];
                     StringBuilder text = new StringBuilder();
-                    for (int i = 1; i < comm_text.length; i++) {
-                        text.append(comm_text[i] + " ");
+                    for (int i = 1; i < comm_text.length - 1; i++) {
+                        if(i == comm_text.length - 1)
+                            text.append(comm_text[i]);
+                        else
+                            text.append(comm_text[i] + " ");
                     }
                     message = new MessageSend(user, comm, text.toString(), groupName);
                 }
@@ -49,10 +52,15 @@ public class SendMessage {
                     message = new MessageSend(user, "/send", data, groupName);
                 }
                 out.writeObject(message);
-
+                out.flush();
                 //Проверяем на наличие изменения группы
                 try {
-                    groupName = exchanger.exchange("", 500, TimeUnit.MILLISECONDS);
+                    String str = exchanger.exchange("", 500, TimeUnit.MILLISECONDS);
+                    if(str != null) {
+                        if(!str.isEmpty()) {
+                            groupName = str;
+                        }
+                    }
                 } catch (TimeoutException ignored) {
                 }
             }

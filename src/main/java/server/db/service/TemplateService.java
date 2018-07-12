@@ -62,7 +62,7 @@ public abstract class TemplateService<T> implements TemplateDao<T> {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.delete(entity);
-            session.lock(entity, LockMode.PESSIMISTIC_WRITE);
+            //session.lock(entity, LockMode.PESSIMISTIC_WRITE);
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
