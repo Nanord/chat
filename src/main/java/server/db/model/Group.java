@@ -11,14 +11,14 @@ import java.util.*;
 
 @Entity
 @Table(name = "Groups")
-@BatchSize(size = 30)
+@BatchSize(size = 20)
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     private int id;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade =  CascadeType.REMOVE, orphanRemoval = true)
     private Set<Message> messageList = new HashSet<Message>();
 
     @Column(name = "name", nullable = false)
@@ -60,18 +60,23 @@ public class Group {
             }
         }
         //если юзер принадлежит этой группе
-        if (user == null &&
-                (!messageSend.getUser().getName().equalsIgnoreCase("Admin") && !messageSend.getUser().getPassword().equalsIgnoreCase("123")) )
-            return;
+        if (user == null)
+            if((!messageSend.getUser().getName().equalsIgnoreCase("Admin") && !messageSend.getUser().getPassword().equalsIgnoreCase("123")))
+                user = new User("Admin", "123");
+            else
+                return;
         //Сохраняем сообщение в БД
         Message message = new Message(messageSend, user, this);
         Factory.getMessageService().add(message);
-        //messageList.add(message);
+       // messageList.add(message);
 
-        //Сообщяем всем о новом сообщении только
+        //Сообщяем всем о новом сообщении
         for (InfoSend infoSend:
              onlineUsers) {
-            infoSend.sendMessage(messageSend);
+            if(!infoSend.isClosed())
+                infoSend.sendMessage(messageSend);
+            else
+                onlineUsers.remove(infoSend);
         }
     }
 

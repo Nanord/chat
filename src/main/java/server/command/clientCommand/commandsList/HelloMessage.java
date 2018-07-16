@@ -23,7 +23,9 @@ public class HelloMessage implements ClientCommand {
         UserSend newUser = DataServer.addNewUser(msg.getUser(), infoSend);
         //отправляем данные Юзеру о его id и стартовую группу
         if(newUser != null) {
-            infoSend.sendMessage(new MessageSend(newUser, msg.getCommandText(),
+            infoSend.sendMessage(new MessageSend(
+                    newUser,
+                    msg.getCommandText(),
                     "ResponseServer: Добро пожаловать",
                     DATA.getMainGroup()
             ));

@@ -25,6 +25,9 @@ public class UsersExitListener implements EventListener {
                         "ResponseServer: " + nameUser + " вышел",
                         null
                 ));
+            else {
+                infoSend.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

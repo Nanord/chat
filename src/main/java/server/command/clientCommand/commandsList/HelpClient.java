@@ -13,11 +13,11 @@ public class HelpClient implements ClientCommand{
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
         StringBuilder str = new StringBuilder();
-        DATA.getCommandClient().forEach(x -> str.append(x.getKey()).append(" - ").append(x.getValue().getHelp()).append('\n'));
+        DATA.getCommandClient().forEach(x -> str.append(x.getKey()).append(" -").append(x.getValue().getHelp()).append('\n'));
         infoSend.sendMessage(new MessageSend(
                 null,
                 msg.getCommandText(),
-                "ResponseServer: " + str,
+                "ResponseServer: \n" + str,
                 msg.getNameGroup()
         ));
     }

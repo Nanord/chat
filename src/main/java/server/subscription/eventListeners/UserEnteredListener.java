@@ -2,6 +2,7 @@ package server.subscription.eventListeners;
 
 import commonData.InfoSend;
 import commonData.MessageSend;
+import server.subscription.EventManager;
 import server.subscription.EventType;
 
 import java.io.IOException;
@@ -25,6 +26,9 @@ public class UserEnteredListener implements EventListener {
                         "ResponseServer: " + nameUser + " - вошел",
                         null
                 ));
+            else {
+                infoSend.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

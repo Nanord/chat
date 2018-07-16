@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "Message")
-@BatchSize(size = 200)
+@BatchSize(size = 100)
 public class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

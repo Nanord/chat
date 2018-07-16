@@ -1,7 +1,10 @@
 package server;
 
 import commonData.InfoSend;
+import commonData.MessageSend;
+import commonData.UserSend;
 import server.command.clientCommand.ClientCommandHandler;
+import server.db.model.User;
 import server.subscription.EventManager;
 import server.subscription.EventType;
 
@@ -23,11 +26,13 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         try {
+            MessageSend msg = infoSend.readMessage();
+            if(msg.getUser() != null)
+                infoSend.setUserSend(msg.getUser());
             while (!infoSend.isClosed()) {
-                ClientCommandHandler.makeCommand(infoSend.readMessage(), infoSend);
+                ClientCommandHandler.makeCommand(msg, infoSend);
+                msg = infoSend.readMessage();
             }
-            System.out.println(count + " Вышел");
-
             if (!infoSend.isClosed())
                 infoSend.close();
         } catch (SocketException ex) {
@@ -43,8 +48,20 @@ public class ClientHandler implements Runnable{
             System.err.println("Присланный объект не соответствует протоколу");
 
         } finally {
-            if(infoSend != null)
+            if(infoSend != null) {
+                User user = DataServer.ifUserName(infoSend.getUserSend());
+                if (user != null) {
+                    user.getGroupList().forEach( x -> x.removeOnlineUser(infoSend));
+                }
                 eventManager.notify(EventType.USERS_EXIT, infoSend.getUserSend().getName());
+                System.out.println(infoSend.getUserSend().getName() + " Вышел");
+                try {
+                    infoSend.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 

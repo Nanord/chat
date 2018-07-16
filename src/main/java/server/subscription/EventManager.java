@@ -17,7 +17,6 @@ public class EventManager {
         return instance;
     }
 
-
     private static Map<EventType, List<EventListener>> listeners = Collections.synchronizedMap(new HashMap<>());
 
     private EventManager() {

@@ -31,8 +31,6 @@ public class ClientCommandHandler extends CommandHandler {
     public static void makeCommand(MessageSend msg, InfoSend infoSend) throws IOException {
         ClientCommand clientCommand = (ClientCommand) commandList.get(msg.getCommandText());
         if (clientCommand != null) {
-            if(msg.getUser() != null)
-                infoSend.setUserSend(msg.getUser());
             clientCommand.make(msg, infoSend);
         } else {
             infoSend.sendMessage(new MessageSend(
@@ -42,6 +40,8 @@ public class ClientCommandHandler extends CommandHandler {
                     msg.getNameGroup()));
         }
     }
+
+
 
     public static void addComands() {
         commandList = Collections.synchronizedMap(new HashMap<String, Command>());

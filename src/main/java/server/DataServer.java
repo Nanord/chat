@@ -121,13 +121,20 @@ public class DataServer {
                 return false;
             } else {
                 Group group = groupMap.get(nameGroup);
-                group.addUser(user, infoSend);
-                group.sendMssage(new MessageSend(
-                        null,
-                        null,
-                        "ResponseServer: Поприветствуйте: " + user.getName(),
-                        group.getName()));
-                return true;
+                if(group != null) {
+                    if(group.containUser(user) == null)
+                        group.addUser(user, infoSend);
+                    else if(!group.getOnlineUsers().contains(infoSend))
+                        group.addOnlineUser(infoSend);
+                    /*group.sendMssage(new MessageSend(
+                            new UserSend("Admin", "123"),
+                            null,
+                            "ResponseServer: Поприветствуйте: " + user.getName(),
+                            group.getName()));*/
+                    return true;
+                }
+                return false;
+
             }
         }
     }

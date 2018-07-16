@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "User")
-@BatchSize(size = 100)
+@BatchSize(size = 60)
 public class User  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

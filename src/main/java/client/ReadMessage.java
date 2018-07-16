@@ -38,14 +38,16 @@ public class ReadMessage implements Runnable {
                 if(message.getData().split(":")[0].equals("ResponseServer") && curUser == null) {
                     err.println(message.getData());
                     //Сервер всегда нам отправляет группу, которой мы принадлежим
-                    String threadMessage = message.getNameGroup();
-                    try {
-                        String a = exchanger.exchange(threadMessage, 500, TimeUnit.MILLISECONDS);
-                    } catch (TimeoutException e) {
+                    if(message.getNameGroup() != null) {
+                        String threadMessage = message.getNameGroup();
+                        try {
+                            String a = exchanger.exchange(threadMessage, 500, TimeUnit.MILLISECONDS);
+                        } catch (TimeoutException e) {
+                        }
                     }
                 } else {
-                    if(!curUser.getName().equalsIgnoreCase(user.getName()))
-                        out.println(curUser.getName() + ": " + message.getData());
+                    if(!curUser.getName().equalsIgnoreCase(user.getName()) || message.getCommandText().equalsIgnoreCase("/get"))
+                        out.println(message.getTime() + " " + curUser.getName() + ": " + message.getData());
                 }
             }
         } catch (SocketException | EOFException ignored) {

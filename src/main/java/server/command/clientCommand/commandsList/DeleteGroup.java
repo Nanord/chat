@@ -3,12 +3,16 @@ package server.command.clientCommand.commandsList;
 import commonData.InfoSend;
 import commonData.MessageSend;
 import server.DataServer;
+import server.subscription.EventManager;
+import server.subscription.EventType;
 
 import java.io.IOException;
 
 public class DeleteGroup implements ClientCommand {
     private String comm;
     private String help;
+
+    private EventManager eventManager = EventManager.getInstance();
 
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
@@ -19,6 +23,7 @@ public class DeleteGroup implements ClientCommand {
                     "ResponseServer: Готово, всё сломалось(",
                     "general"
             ));
+            eventManager.notify(EventType.GROUP_DELETE, msg.getData());
         }
         else {
             infoSend.sendMessage(new MessageSend(

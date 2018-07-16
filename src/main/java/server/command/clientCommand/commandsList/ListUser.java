@@ -16,7 +16,7 @@ public class ListUser implements ClientCommand {
 
         DataServer.getGroupMap().values().forEach( x -> {
             String nameGroup = x.getName();
-            x.getOnlineUsers().forEach( y -> str.append( y.getUserSend().getName()).append(" - ").append(nameGroup));
+            x.getOnlineUsers().forEach( y -> str.append( y.getUserSend().getName()).append(" - ").append(nameGroup).append("\n"));
         });
 
         infoSend.sendMessage(new MessageSend(

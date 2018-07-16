@@ -38,6 +38,8 @@ public class InfoSend {
             outputStream.writeObject(msg);
             outputStream.flush();
         }
+        else
+            close();
     }
 
     public void setOutputStream(ObjectOutputStream outputStream) {

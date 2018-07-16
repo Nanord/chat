@@ -23,13 +23,15 @@ public class CreateGroup implements ClientCommand {
                     "ResponseServer: Группа с таким именем уже существует",
                     msg.getNameGroup()));
         } else {
-            eventManager.notify(EventType.GROUP_CREATED, msg.getData(), msg.getUser().getName());
+
+            DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);
             infoSend.sendMessage(
                     new MessageSend(
                             null,
                             msg.getCommandText(),
                             "ResponseServer: Всё ок",
                             msg.getData()));
+            eventManager.notify(EventType.GROUP_CREATED, msg.getData(), msg.getUser().getName());
         }
     }
 

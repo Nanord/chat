@@ -39,7 +39,7 @@ public class SendMessage {
                     String[] comm_text = data.split(" ");
                     String comm = comm_text[0];
                     StringBuilder text = new StringBuilder();
-                    for (int i = 1; i < comm_text.length - 1; i++) {
+                    for (int i = 1; i < comm_text.length; i++) {
                         if(i == comm_text.length - 1)
                             text.append(comm_text[i]);
                         else

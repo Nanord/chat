@@ -16,9 +16,9 @@ public class ListGroup implements ClientCommand {
 
         DataServer.getGroupMap().forEach((x, y) -> {
             str.append("Group Name: ");
-            str.append("\"").append(x).append("\"\n");
+            str.append("\"").append(x).append("\"\n\t");
             str.append("Users in group: \n");
-            y.getOnlineUsers().forEach(o -> str.append("\t\"").append(o.getUserSend().getName()).append("\"\n"));
+            y.getOnlineUsers().forEach(o -> str.append("\t\t\"").append(o.getUserSend().getName()).append("\"\n"));
         });
 
         infoSend.sendMessage(new MessageSend(

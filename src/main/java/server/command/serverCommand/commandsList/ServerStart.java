@@ -15,10 +15,8 @@ public class ServerStart implements ServerCommand, Runnable {
     private String help;
 
 
-    private ExecutorService executorService;
 
     public ServerStart() {
-        this.executorService = Executors.newSingleThreadExecutor();
     }
     @Override
     public String make(String txt) {
@@ -30,7 +28,7 @@ public class ServerStart implements ServerCommand, Runnable {
             } else {
                 Thread thread = new Thread(this, "server");
                 //super.setDaemon(true);
-                executorService.submit(thread);
+                thread.start();
                 str.append("OK" + "\n");
             }
 

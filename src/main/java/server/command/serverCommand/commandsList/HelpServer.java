@@ -3,6 +3,7 @@ package server.command.serverCommand.commandsList;
 import commonData.CommandString;
 import commonData.DATA;
 
+import javax.xml.crypto.Data;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -17,8 +18,15 @@ public class HelpServer implements ServerCommand {
         str.append("Список комманд: \n");
         Stream<Map.Entry<String, CommandString>> stream = DATA.getCommandServer();
         stream.forEach((x) -> {
-            str.append("Command: " + x.getKey() + " Class: " + x.getValue().getClassName() + ".java" + "\n" +
-            "\tHelp:" + x.getValue().getHelp());
+            str.append(DATA.ANSI_RED + "\"")
+                    .append(x.getKey())
+                    .append("\"" + DATA.ANSI_RESET + "Class: \"")
+                    .append(x.getValue().getClassName())
+                    .append(".java\"")
+                    .append("\n")
+                    .append("\t\"")
+                    .append(x.getValue().getHelp())
+                    .append("\"\n");
         });
 
         return str.toString();

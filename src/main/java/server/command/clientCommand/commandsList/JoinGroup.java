@@ -12,7 +12,14 @@ public class JoinGroup implements ClientCommand {
 
     @Override
     public void make(MessageSend msg, InfoSend infoSend) throws IOException {
-        DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);
+        if(msg.getNameGroup().equalsIgnoreCase(msg.getData())) {
+            infoSend.sendMessage(
+                    new MessageSend(
+                            null,
+                            "/error",
+                            "ResponseServer: Вы уже в этой группе",
+                            msg.getNameGroup()));
+        }
         boolean flag = DataServer.addUserInGroup(msg.getData(), msg.getUser(), infoSend);
         if(!flag) {
             infoSend.sendMessage(
@@ -22,6 +29,7 @@ public class JoinGroup implements ClientCommand {
                             "ResponseServer: Группы с таким именем не существует",
                             msg.getNameGroup()));
         } else {
+            DataServer.exitOnlineUser(msg.getNameGroup(), infoSend);
             infoSend.sendMessage(
                     new MessageSend(
                             null,
