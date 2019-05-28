@@ -1,4 +1,5 @@
 # Client-Server chat on java
+## presentation.pptx UML диаграммы и описание проекта
 
 * __Требования__: 
     1. база пользователей.
